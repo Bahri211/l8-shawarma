@@ -130,6 +130,138 @@
     .success-card p { color: var(--muted); margin-bottom: 8px; }
     .order-id { font-weight: 700; color: var(--red); font-size: 15px; }
     .success-card .btn-primary { margin-top: 28px; display: inline-block; }
+
+    /* ---- DELIVERY MODAL ---- */
+    .modal-overlay {
+      display: none; position: fixed; inset: 0; z-index: 500;
+      background: rgba(26,18,9,.7); backdrop-filter: blur(6px);
+      align-items: center; justify-content: center; padding: 24px;
+    }
+    .modal-overlay.show { display: flex; }
+    .delivery-modal {
+      background: var(--white); border-radius: 24px;
+      width: 100%; max-width: 520px;
+      box-shadow: 0 20px 60px rgba(0,0,0,.3);
+      overflow: hidden;
+    }
+    .modal-header {
+      background: var(--red); color: var(--white);
+      padding: 20px 28px;
+      font-family: 'Playfair Display', serif;
+      font-size: 20px; font-weight: 700;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .modal-close {
+      background: none; border: none; color: var(--white);
+      font-size: 24px; cursor: pointer; line-height: 1; padding: 0;
+    }
+    .modal-body { padding: 28px; }
+
+    /* Type buttons */
+    .modal-type-btns { display: flex; flex-direction: column; gap: 12px; margin-bottom: 24px; }
+    .modal-type-btn {
+      padding: 16px; border-radius: 12px; border: none; cursor: pointer;
+      font-size: 16px; font-weight: 700; letter-spacing: .05em;
+      font-family: 'DM Sans', sans-serif; transition: .2s;
+    }
+    .modal-type-btn.afhentning {
+      background: #4a4a4a; color: var(--white);
+    }
+    .modal-type-btn.afhentning.selected,
+    .modal-type-btn.afhentning:hover {
+      background: #2a2a2a;
+    }
+    .modal-type-btn.levering {
+      background: #4a4a4a; color: var(--white);
+    }
+    .modal-type-btn.levering.selected,
+    .modal-type-btn.levering:hover {
+      background: var(--red);
+    }
+
+    /* Address search */
+    .addr-search-wrap {
+      display: none; flex-direction: column; gap: 12px;
+    }
+    .addr-search-wrap.visible { display: flex; }
+    .addr-label { font-weight: 600; font-size: 15px; color: var(--dark); }
+    .addr-input-row { display: flex; gap: 10px; }
+    .addr-input {
+      flex: 1; background: var(--warm);
+      border: 1.5px solid rgba(212,151,58,.3); border-radius: 10px;
+      padding: 13px 15px; font-size: 15px;
+      font-family: 'DM Sans', sans-serif; outline: none;
+      transition: border-color .2s;
+    }
+    .addr-input:focus { border-color: var(--red); background: var(--white); }
+    .addr-search-btn {
+      background: var(--red); color: var(--white);
+      border: none; cursor: pointer; padding: 13px 20px;
+      border-radius: 10px; font-size: 15px; font-weight: 700;
+      font-family: 'DM Sans', sans-serif; transition: .2s; white-space: nowrap;
+    }
+    .addr-search-btn:hover { background: var(--red2); }
+    .addr-search-btn:disabled { opacity: .6; cursor: not-allowed; }
+
+    /* Result box */
+    .delivery-result {
+      display: none; margin-top: 4px;
+      border-radius: 14px; overflow: hidden;
+      border: 2px solid #22c55e;
+    }
+    .delivery-result.show { display: block; }
+    .delivery-result.no-delivery { border-color: var(--red); }
+    .result-header {
+      background: #22c55e; color: var(--white);
+      padding: 14px 18px; font-size: 18px; font-weight: 700;
+      font-family: 'Playfair Display', serif;
+    }
+    .delivery-result.no-delivery .result-header { background: var(--red); }
+    .result-body { background: #f0fdf4; padding: 16px 18px; }
+    .delivery-result.no-delivery .result-body { background: #fff5f5; }
+    .result-row {
+      display: flex; justify-content: space-between;
+      font-size: 14px; padding: 5px 0;
+      border-bottom: 1px solid rgba(0,0,0,.06);
+      color: var(--text);
+    }
+    .result-row:last-child { border-bottom: none; }
+    .result-row strong { font-weight: 700; }
+
+    /* Confirm buttons */
+    .modal-confirm-btns {
+      display: none; gap: 12px; margin-top: 20px;
+    }
+    .modal-confirm-btns.show { display: flex; }
+    .btn-nej {
+      flex: 1; padding: 14px; border-radius: 50px;
+      border: none; cursor: pointer; font-size: 16px; font-weight: 700;
+      background: #eab308; color: var(--dark);
+      font-family: 'DM Sans', sans-serif; transition: .2s;
+    }
+    .btn-nej:hover { background: #ca8a04; color: var(--white); }
+    .btn-ja {
+      flex: 1; padding: 14px; border-radius: 50px;
+      border: none; cursor: pointer; font-size: 16px; font-weight: 700;
+      background: var(--red); color: var(--white);
+      font-family: 'DM Sans', sans-serif; transition: .2s;
+    }
+    .btn-ja:hover { background: var(--red2); }
+
+    /* Delivery info strip on checkout page */
+    .delivery-info-strip {
+      display: none; background: #f0fdf4;
+      border: 1.5px solid #22c55e; border-radius: 12px;
+      padding: 14px 18px; margin-top: 12px;
+      font-size: 14px; gap: 8px; flex-direction: column;
+    }
+    .delivery-info-strip.show { display: flex; }
+    .dis-row { display: flex; justify-content: space-between; }
+    .dis-change {
+      background: none; border: none; color: var(--red);
+      font-weight: 600; font-size: 13px; cursor: pointer;
+      text-decoration: underline; padding: 0; font-family: 'DM Sans', sans-serif;
+    }
   </style>
 </head>
 <body>
@@ -156,8 +288,17 @@
         <div class="section-card">
           <h2>🚀 Leveringstype</h2>
           <div class="delivery-toggle">
-            <div class="delivery-opt active" id="opt-delivery" onclick="setDelivery('delivery')">🏠 Udbringning</div>
-            <div class="delivery-opt" id="opt-pickup" onclick="setDelivery('pickup')">🏪 Afhentning</div>
+            <div class="delivery-opt" id="opt-delivery" onclick="openDeliveryModal('delivery')">🏠 Udbringning</div>
+            <div class="delivery-opt" id="opt-pickup" onclick="openDeliveryModal('pickup')">🏪 Afhentning</div>
+          </div>
+          <!-- Delivery confirmed info strip -->
+          <div class="delivery-info-strip" id="deliveryInfoStrip">
+            <div class="dis-row"><span id="disType" style="font-weight:700;"></span><button class="dis-change" onclick="DeliveryModal.open(function(d){ localStorage.setItem('sp_delivery', JSON.stringify(d)); applyDeliveryData(d); })">Skift →</button></div>
+            <div class="dis-row" id="disAddressRow" style="display:none;"><span id="disAddress" style="color:var(--muted);"></span></div>
+            <div class="dis-row" id="disDistRow" style="display:none;">
+              <span>Afstand: <strong id="disDist"></strong></span>
+              <span>Levering: <strong id="disFee" style="color:var(--red);"></strong></span>
+            </div>
           </div>
           <p id="pickup-note" style="display:none;color:var(--muted);font-size:13px;margin-top:8px;">
             📍 Bjerrevej 73, 8700 Horsens — klar om ca. 20 min
@@ -262,15 +403,20 @@
     // ---- CART ----
     let cart = JSON.parse(localStorage.getItem('sp_cart') || '[]');
     let deliveryType = 'delivery';
-    const DELIVERY_FEE = 29;
     let stripe, cardElement;
 
     function renderCart() {
       const container = document.getElementById('cartItems');
+      const btn = document.getElementById('placeOrderBtn');
       if (!cart.length) {
-        container.innerHTML = '<div class="empty-cart">🛒 Din kurv er tom<br/><a href="/" style="color:var(--red);">← Se menu</a></div>';
-        document.getElementById('placeOrderBtn').disabled = true;
+        container.innerHTML = '<div class="empty-cart">🛒 Din kurv er tom<br/><a href="/" style="color:var(--red);font-weight:600;">← Gå til menu og tilføj varer</a></div>';
+        btn.disabled = true;
+        btn.style.opacity = '0.5';
+        btn.style.cursor = 'not-allowed';
       } else {
+        btn.disabled = false;
+        btn.style.opacity = '1';
+        btn.style.cursor = 'pointer';
         container.innerHTML = cart.map((item, i) => `
           <div class="cart-item">
             <div>
@@ -285,7 +431,6 @@
             </div>
           </div>
         `).join('');
-        document.getElementById('placeOrderBtn').disabled = false;
       }
       updateTotals();
     }
@@ -299,65 +444,284 @@
 
     function updateTotals() {
       const subtotal = cart.reduce((s, i) => s + i.price * i.qty, 0);
-      const fee = deliveryType === 'delivery' ? DELIVERY_FEE : 0;
+      const fee = deliveryType === 'delivery' ? deliveryFeeAmount : 0;
       const grand = subtotal + fee;
       document.getElementById('subtotal').textContent = subtotal + ' kr';
       document.getElementById('deliveryFee').textContent = fee + ' kr';
       document.getElementById('grandTotal').textContent = grand + ' kr';
     }
 
-    function setDelivery(type) {
-      deliveryType = type;
-      document.getElementById('opt-delivery').classList.toggle('active', type === 'delivery');
-      document.getElementById('opt-pickup').classList.toggle('active', type === 'pickup');
-      document.getElementById('addressFields').style.display = type === 'delivery' ? '' : 'none';
-      document.getElementById('deliveryFeeRow').style.display = type === 'delivery' ? '' : 'none';
-      document.getElementById('pickup-note').style.display = type === 'pickup' ? '' : 'none';
+    // ---- DELIVERY MODAL STATE ----
+    const RESTAURANT_ADDRESS = 'Bjerrevej 73, 8700 Horsens, Denmark';
+    const GOOGLE_KEY = 'AIzaSyBe3s3P19AuUmDCE_5X8ftS1PyF6b_B7Q8';
+    let deliveryFeeAmount = 29;       // default, updated by modal
+    let deliveryConfirmed = false;
+    let currentModalType = null;
+    let deliveryResultData = null;    // stores last search result
+
+    // Pricing rules
+    function calcDeliveryFee(distanceKm) {
+      if (distanceKm <= 3)  return { fee: 29,  minOrder: 100, freeAt: 249 };
+      if (distanceKm <= 6)  return { fee: 39,  minOrder: 129, freeAt: 299 };
+      if (distanceKm <= 10) return { fee: 49,  minOrder: 149, freeAt: 349 };
+      if (distanceKm <= 15) return { fee: 69,  minOrder: 179, freeAt: 399 };
+      return null; // too far
+    }
+
+    function openDeliveryModal(type) {
+      document.getElementById('deliveryModal').classList.add('show');
+      document.getElementById('deliveryResult').classList.remove('show', 'no-delivery');
+      document.getElementById('modalConfirmBtns').classList.remove('show');
+      document.getElementById('modalAddressInput').value = '';
+      if (type) selectModalType(type);
+    }
+
+    function closeDeliveryModal() {
+      document.getElementById('deliveryModal').classList.remove('show');
+    }
+
+    function selectModalType(type) {
+      currentModalType = type;
+      document.getElementById('modal-btn-pickup').classList.toggle('selected', type === 'pickup');
+      document.getElementById('modal-btn-delivery').classList.toggle('selected', type === 'delivery');
+      const wrap = document.getElementById('addrSearchWrap');
+      if (type === 'delivery') {
+        wrap.classList.add('visible');
+      } else {
+        wrap.classList.remove('visible');
+        // Pickup — confirm immediately
+        confirmPickup();
+      }
+    }
+
+    function confirmPickup() {
+      deliveryType = 'pickup';
+      deliveryConfirmed = true;
+      deliveryFeeAmount = 0;
+      // Update UI
+      document.getElementById('opt-delivery').classList.remove('active');
+      document.getElementById('opt-pickup').classList.add('active');
+      document.getElementById('addressFields').style.display = 'none';
+      document.getElementById('deliveryFeeRow').style.display = 'none';
+      document.getElementById('pickup-note').style.display = '';
+      const strip = document.getElementById('deliveryInfoStrip');
+      strip.classList.add('show');
+      document.getElementById('disType').textContent = '🏪 Afhentning – Bjerrevej 73, 8700 Horsens';
+      document.getElementById('disAddressRow').style.display = 'none';
+      document.getElementById('disDistRow').style.display = 'none';
       updateTotals();
+      closeDeliveryModal();
+    }
+
+    async function searchDeliveryAddress() {
+      const input = document.getElementById('modalAddressInput').value.trim();
+      if (!input) { alert('Indtast venligst en adresse.'); return; }
+
+      const btn = document.getElementById('addrSearchBtn');
+      btn.textContent = '⏳';
+      btn.disabled = true;
+      document.getElementById('deliveryResult').classList.remove('show', 'no-delivery');
+      document.getElementById('modalConfirmBtns').classList.remove('show');
+
+      try {
+        // 1. Geocode customer address
+        const geoUrl = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(input + ', Denmark')}&key=${GOOGLE_KEY}`;
+        const geoRes = await fetch(geoUrl);
+        const geoData = await geoRes.json();
+
+        if (!geoData.results || !geoData.results.length) {
+          showModalError('Adressen blev ikke fundet. Prøv igen med vejnavn og nummer.');
+          return;
+        }
+
+        const customerAddress = geoData.results[0].formatted_address;
+        const { lat, lng } = geoData.results[0].geometry.location;
+
+        // 2. Distance Matrix from restaurant to customer
+        const distUrl = `https://maps.googleapis.com/maps/api/distancematrix/json?origins=${encodeURIComponent(RESTAURANT_ADDRESS)}&destinations=${lat},${lng}&units=metric&key=${GOOGLE_KEY}`;
+        const distRes = await fetch(distUrl);
+        const distData = await distRes.json();
+
+        const element = distData.rows?.[0]?.elements?.[0];
+        if (!element || element.status !== 'OK') {
+          showModalError('Kunne ikke beregne afstand. Prøv igen.');
+          return;
+        }
+
+        const distanceM = element.distance.value;
+        const distanceKm = distanceM / 1000;
+        const durationText = element.duration.text;
+        const distanceText = (distanceKm).toFixed(1) + ' km';
+
+        const pricing = calcDeliveryFee(distanceKm);
+        const resultEl = document.getElementById('deliveryResult');
+        const headerEl = document.getElementById('resultHeader');
+        const bodyEl   = document.getElementById('resultBody');
+
+        if (!pricing) {
+          // Too far
+          resultEl.classList.add('show', 'no-delivery');
+          headerEl.textContent = 'Levering ikke mulig';
+          bodyEl.innerHTML = `
+            <div class="result-row"><span>Adresse</span><strong>${customerAddress}</strong></div>
+            <div class="result-row"><span>Afstand</span><strong>${distanceText}</strong></div>
+            <div class="result-row" style="color:var(--red);font-weight:600;">Vi leverer desværre ikke så langt.</div>
+          `;
+          document.getElementById('modalConfirmBtns').classList.remove('show');
+          deliveryResultData = null;
+        } else {
+          // Delivery possible
+          resultEl.classList.add('show');
+          resultEl.classList.remove('no-delivery');
+          headerEl.textContent = 'Levering mulig! ✓';
+          bodyEl.innerHTML = `
+            <div class="result-row"><span>Adresse</span><strong>${customerAddress}</strong></div>
+            <div class="result-row"><span>Afstand</span><strong>${distanceText}</strong></div>
+            <div class="result-row"><span>Leveringspris</span><strong>${pricing.fee} kr</strong></div>
+            <div class="result-row"><span>Minimumsordre</span><strong>${pricing.minOrder} kr</strong></div>
+            <div class="result-row"><span>Gratis levering ved</span><strong>${pricing.freeAt} kr</strong></div>
+            <div class="result-row"><span>Estimeret tid</span><strong>${durationText}</strong></div>
+            <div style="margin-top:12px;font-size:16px;font-weight:700;color:var(--dark);">Ønsker du at fortsætte?</div>
+          `;
+          deliveryResultData = { address: customerAddress, distanceText, pricing, durationText };
+          document.getElementById('modalConfirmBtns').classList.add('show');
+        }
+
+      } catch(err) {
+        showModalError('Noget gik galt. Tjek din internetforbindelse og prøv igen.');
+        console.error(err);
+      } finally {
+        btn.textContent = 'Søg';
+        btn.disabled = false;
+      }
+    }
+
+    function showModalError(msg) {
+      const resultEl = document.getElementById('deliveryResult');
+      resultEl.classList.add('show', 'no-delivery');
+      document.getElementById('resultHeader').textContent = 'Fejl';
+      document.getElementById('resultBody').innerHTML = `<div class="result-row" style="color:var(--red);">${msg}</div>`;
+    }
+
+    function confirmDelivery() {
+      if (!deliveryResultData) return;
+      const { address, distanceText, pricing } = deliveryResultData;
+
+      deliveryType = 'delivery';
+      deliveryConfirmed = true;
+      deliveryFeeAmount = pricing.fee;
+
+      // Fill in the address field automatically
+      document.getElementById('d-address').value = address;
+
+      // Update delivery type UI
+      document.getElementById('opt-delivery').classList.add('active');
+      document.getElementById('opt-pickup').classList.remove('active');
+      document.getElementById('addressFields').style.display = '';
+      document.getElementById('deliveryFeeRow').style.display = '';
+      document.getElementById('pickup-note').style.display = 'none';
+
+      // Show confirmed strip
+      const strip = document.getElementById('deliveryInfoStrip');
+      strip.classList.add('show');
+      document.getElementById('disType').textContent = '🏠 Udbringning';
+      document.getElementById('disAddress').textContent = address;
+      document.getElementById('disAddressRow').style.display = '';
+      document.getElementById('disDist').textContent = distanceText;
+      document.getElementById('disFee').textContent = pricing.fee + ' kr';
+      document.getElementById('disDistRow').style.display = '';
+
+      updateTotals();
+      closeDeliveryModal();
+    }
+
+    function setDelivery(type) {
+      // Legacy — now handled by modal
+      openDeliveryModal(type);
     }
 
     // ---- STRIPE ----
-    const stripeKey = window.STRIPE_PUBLIC_KEY || 'pk_test_51T4kvT9PpJ5u93penIxhLEJ2qsU9XghVfdzgQcyrNzVtTcGSy9WguAcP1ybdlzDEViWSrk7KLOJOaV1zA1A25LiY00AmbcWElF';
-    stripe = Stripe(stripeKey);
-    const elements = stripe.elements();
-    cardElement = elements.create('card', {
-      style: {
-        base: { fontFamily: "'DM Sans', sans-serif", fontSize: '16px', color: '#2D1F0E', '::placeholder': { color: '#7A6552' } },
-        invalid: { color: '#C8302B' }
+    // Detect if a real Stripe key has been set
+    const stripeKey = window.STRIPE_PUBLIC_KEY || '';
+    const stripeReady = stripeKey && !stripeKey.includes('YOUR_PUBLISHABLE_KEY');
+
+    if (stripeReady) {
+      try {
+        stripe = Stripe(stripeKey);
+        const elements = stripe.elements();
+        cardElement = elements.create('card', {
+          style: {
+            base: { fontFamily: "'DM Sans', sans-serif", fontSize: '16px', color: '#2D1F0E', '::placeholder': { color: '#7A6552' } },
+            invalid: { color: '#C8302B' }
+          }
+        });
+        cardElement.mount('#stripe-element-container');
+        cardElement.on('change', e => {
+          document.getElementById('card-errors').textContent = e.error ? e.error.message : '';
+        });
+        document.getElementById('stripe-element-container').innerHTML = '';
+        cardElement.mount('#stripe-element-container');
+      } catch(e) {
+        console.warn('Stripe init failed:', e);
+        showStripeWarning();
       }
-    });
-    cardElement.mount('#stripe-element-container');
-    cardElement.on('change', e => {
-      document.getElementById('card-errors').textContent = e.error ? e.error.message : '';
-    });
+    } else {
+      // No real key yet — show a warning but keep the page usable
+      showStripeWarning();
+    }
+
+    function showStripeWarning() {
+      document.getElementById('stripe-element-container').innerHTML = `
+        <div style="background:#fff8e1;border:1.5px solid #f0c040;border-radius:8px;padding:14px 16px;font-size:13px;color:#7a5a00;display:flex;align-items:flex-start;gap:10px;">
+          <span style="font-size:18px;">⚠️</span>
+          <div>
+            <strong>Stripe ikke konfigureret endnu.</strong><br/>
+            Tilføj din <code style="background:rgba(0,0,0,.07);padding:1px 5px;border-radius:4px;">STRIPE_PUBLISHABLE_KEY</code> i <code style="background:rgba(0,0,0,.07);padding:1px 5px;border-radius:4px;">.env.local</code>
+            og erstat nøglen i <code>checkout.html</code>.<br/>
+            <a href="https://dashboard.stripe.com/apikeys" target="_blank" style="color:#c8302b;font-weight:600;">Hent nøgler fra Stripe →</a>
+          </div>
+        </div>`;
+    }
 
     // ---- PLACE ORDER ----
     async function placeOrder() {
-      if (!cart.length) return;
+      const btn = document.getElementById('placeOrderBtn');
 
-      const name = document.getElementById('d-name').value.trim();
-      const phone = document.getElementById('d-phone').value.trim();
-      const address = deliveryType === 'delivery' ? document.getElementById('d-address').value.trim() : 'Afhentning';
-      const email = document.getElementById('d-email').value.trim();
-      const notes = document.getElementById('d-notes').value.trim();
-      const zip = document.getElementById('d-zip')?.value?.trim() || '';
-      const city = document.getElementById('d-city')?.value?.trim() || '';
-
-      if (!name || !phone || (deliveryType === 'delivery' && !address)) {
-        alert('Udfyld venligst alle påkrævede felter (navn, telefon, adresse).');
+      // Validate cart
+      if (!cart.length) {
+        showError('Din kurv er tom. Gå tilbage og tilføj varer.');
         return;
       }
 
-      const btn = document.getElementById('placeOrderBtn');
-      btn.textContent = 'Behandler...';
+      // Validate Stripe
+      if (!stripeReady || !cardElement) {
+        showError('Betalingssystem ikke konfigureret. Tilføj din Stripe nøgle.');
+        return;
+      }
+
+      // Validate delivery fields
+      const name    = document.getElementById('d-name').value.trim();
+      const phone   = document.getElementById('d-phone').value.trim();
+      const address = deliveryType === 'delivery' ? document.getElementById('d-address').value.trim() : 'Afhentning';
+      const email   = document.getElementById('d-email').value.trim();
+      const notes   = document.getElementById('d-notes').value.trim();
+      const zip     = document.getElementById('d-zip')?.value?.trim() || '';
+      const city    = document.getElementById('d-city')?.value?.trim() || '';
+
+      if (!name) { showError('Udfyld venligst dit fulde navn.'); return; }
+      if (!phone) { showError('Udfyld venligst dit telefonnummer.'); return; }
+      if (deliveryType === 'delivery' && !address) { showError('Udfyld venligst din leveringsadresse.'); return; }
+
+      btn.textContent = '⏳ Behandler betaling...';
       btn.disabled = true;
+      clearError();
 
       const subtotal = cart.reduce((s, i) => s + i.price * i.qty, 0);
       const fee = deliveryType === 'delivery' ? DELIVERY_FEE : 0;
       const total = subtotal + fee;
 
       try {
-        // 1. Create Payment Intent
+        // 1. Create Payment Intent on backend
         const intentRes = await fetch('/api/payment/intent', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -366,7 +730,7 @@
         const intentData = await intentRes.json();
         if (!intentRes.ok) throw new Error(intentData.error || 'Betaling fejlede.');
 
-        // 2. Confirm card payment
+        // 2. Confirm card payment with Stripe
         const { error, paymentIntent } = await stripe.confirmCardPayment(intentData.clientSecret, {
           payment_method: {
             card: cardElement,
@@ -375,7 +739,7 @@
         });
         if (error) throw new Error(error.message);
 
-        // 3. Save order
+        // 3. Save confirmed order to backend
         const orderRes = await fetch('/api/payment', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -390,20 +754,137 @@
         const orderData = await orderRes.json();
         if (!orderRes.ok) throw new Error(orderData.error || 'Ordre fejlede.');
 
-        // SUCCESS
+        // 4. SUCCESS — clear cart and show confirmation
         localStorage.removeItem('sp_cart');
         document.getElementById('successOrderId').textContent = 'Ordre ID: ' + orderData.order.orderId;
         document.getElementById('orderSuccess').classList.add('show');
 
       } catch (err) {
-        alert('❌ ' + err.message);
+        showError('❌ ' + err.message);
         btn.textContent = 'Afgiv ordre';
         btn.disabled = false;
       }
     }
 
+    // ---- HELPERS ----
+    function showError(msg) {
+      let el = document.getElementById('checkoutError');
+      if (!el) {
+        el = document.createElement('div');
+        el.id = 'checkoutError';
+        el.style.cssText = 'background:rgba(200,48,43,.08);border:1.5px solid rgba(200,48,43,.3);color:#C8302B;padding:14px 18px;border-radius:12px;font-size:14px;font-weight:500;margin-bottom:16px;';
+        document.getElementById('placeOrderBtn').insertAdjacentElement('beforebegin', el);
+      }
+      el.textContent = msg;
+      el.style.display = 'block';
+      el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+    function clearError() {
+      const el = document.getElementById('checkoutError');
+      if (el) el.style.display = 'none';
+    }
+
+    // ---- PRE-FILL FROM sp_delivery (set on homepage) ----
+    (function prefillDelivery() {
+      const saved = localStorage.getItem('sp_delivery');
+      if (!saved) {
+        // No delivery chosen yet — open modal after short delay
+        setTimeout(() => DeliveryModal.open(applyDeliveryData), 400);
+        return;
+      }
+      try {
+        applyDeliveryData(JSON.parse(saved));
+      } catch(e) {
+        setTimeout(() => DeliveryModal.open(applyDeliveryData), 400);
+      }
+    })();
+
+    function applyDeliveryData(data) {
+      if (!data) return;
+      deliveryType = data.type;
+      deliveryFeeAmount = data.fee || 0;
+      deliveryConfirmed = true;
+
+      // Update toggle buttons
+      document.getElementById('opt-delivery').classList.toggle('active', data.type === 'delivery');
+      document.getElementById('opt-pickup').classList.toggle('active', data.type === 'pickup');
+
+      if (data.type === 'delivery') {
+        document.getElementById('addressFields').style.display = '';
+        document.getElementById('deliveryFeeRow').style.display = '';
+        document.getElementById('pickup-note').style.display = 'none';
+        if (data.address) document.getElementById('d-address').value = data.address;
+
+        // Show info strip
+        const strip = document.getElementById('deliveryInfoStrip');
+        strip.classList.add('show');
+        document.getElementById('disType').textContent = '🏠 Udbringning';
+        if (data.address) {
+          document.getElementById('disAddress').textContent = data.address;
+          document.getElementById('disAddressRow').style.display = '';
+        }
+        if (data.distanceText) {
+          document.getElementById('disDist').textContent = data.distanceText;
+          document.getElementById('disFee').textContent = (data.fee || 0) + ' kr';
+          document.getElementById('disDistRow').style.display = '';
+        }
+      } else {
+        document.getElementById('addressFields').style.display = 'none';
+        document.getElementById('deliveryFeeRow').style.display = 'none';
+        document.getElementById('pickup-note').style.display = '';
+        const strip = document.getElementById('deliveryInfoStrip');
+        strip.classList.add('show');
+        document.getElementById('disType').textContent = '🏪 Afhentning – Bjerrevej 73, 8700 Horsens';
+        document.getElementById('disAddressRow').style.display = 'none';
+        document.getElementById('disDistRow').style.display = 'none';
+      }
+      updateTotals();
+    }
+
     // Init
     renderCart();
   </script>
+
+  <!-- ===== DELIVERY MODAL ===== -->
+  <div class="modal-overlay" id="deliveryModal">
+    <div class="delivery-modal">
+      <div class="modal-header">
+        <span>Vælg leveringsmetode</span>
+        <button class="modal-close" onclick="closeDeliveryModal()">×</button>
+      </div>
+      <div class="modal-body">
+        <!-- Type buttons -->
+        <div class="modal-type-btns">
+          <button class="modal-type-btn afhentning" id="modal-btn-pickup" onclick="selectModalType('pickup')">AFHENTNING</button>
+          <button class="modal-type-btn levering" id="modal-btn-delivery" onclick="selectModalType('delivery')">LEVERING</button>
+        </div>
+
+        <!-- Address search (shown when levering selected) -->
+        <div class="addr-search-wrap" id="addrSearchWrap">
+          <span class="addr-label">Indtast adresse (vejnavn og nummer)</span>
+          <div class="addr-input-row">
+            <input class="addr-input" id="modalAddressInput" type="text" placeholder="Borgmesterbakken 6, 8700 Horsens"
+              onkeydown="if(event.key==='Enter') searchDeliveryAddress()" />
+            <button class="addr-search-btn" id="addrSearchBtn" onclick="searchDeliveryAddress()">Søg</button>
+          </div>
+
+          <!-- Result -->
+          <div class="delivery-result" id="deliveryResult">
+            <div class="result-header" id="resultHeader"></div>
+            <div class="result-body" id="resultBody"></div>
+          </div>
+
+          <!-- Confirm buttons -->
+          <div class="modal-confirm-btns" id="modalConfirmBtns">
+            <button class="btn-nej" onclick="closeDeliveryModal()">Nej</button>
+            <button class="btn-ja" id="modalJaBtn" onclick="confirmDelivery()">Ja</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <script src="delivery-modal.js"></script>
 </body>
 </html>

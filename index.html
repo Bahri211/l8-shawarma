@@ -21,7 +21,7 @@
         <li><a href="#menu">Menu</a></li>
         <li><a href="#about">Om Os</a></li>
         <li><a href="#contact">Kontakt</a></li>
-        <li><a class="btn-order" href="checkout.html">Bestil Nu</a></li>
+        <li><button class="btn-order" onclick="openOrderModal()" style="border:none;cursor:pointer;font-family:inherit;">Bestil Nu</button></li>
       </ul>
       <button class="burger" id="burger" aria-label="menu">
         <span></span><span></span><span></span>
@@ -35,7 +35,7 @@
       <li><a href="#menu">Menu</a></li>
       <li><a href="#about">Om Os</a></li>
       <li><a href="#contact">Kontakt</a></li>
-      <li><a class="btn-order-mobile" href="checkout.html">Bestil Nu</a></li>
+      <li><button class="btn-order-mobile" onclick="openOrderModal()" style="border:none;cursor:pointer;font-family:inherit;">Bestil Nu</button></li>
     </ul>
   </div>
 
@@ -47,7 +47,7 @@
       <h1>Ægte Italiensk<br/><span>Stenovnspizza</span></h1>
       <p class="hero-sub">Håndlavet dej, friske råvarer og kærlighed bagt direkte fra vores italienske stenovn til dit bord.</p>
       <div class="hero-cta">
-        <a class="btn-primary" href="checkout.html">Bestil Takeaway</a>
+        <button class="btn-primary" onclick="openOrderModal()" style="border:none;cursor:pointer;">Bestil Takeaway</button>
         <a class="btn-ghost" href="#menu">Se Menuen</a>
       </div>
       <div class="hero-badges">
@@ -522,6 +522,15 @@
       mobileMenu.classList.remove('open');
     }));
 
+    // Open delivery modal then redirect to checkout
+    function openOrderModal() {
+      DeliveryModal.open(function(delivery) {
+        // Save delivery info, then go to checkout
+        localStorage.setItem('sp_delivery', JSON.stringify(delivery));
+        window.location.href = 'checkout.html';
+      });
+    }
+
     // Smooth scroll
     document.querySelectorAll('a[href^="#"]').forEach(a => {
       a.addEventListener('click', e => {
@@ -530,5 +539,6 @@
       });
     });
   </script>
+  <script src="delivery-modal.js"></script>
 </body>
 </html>

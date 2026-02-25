@@ -6,6 +6,7 @@
     { "src": "*.css",       "use": "@vercel/static" }
   ],
   "routes": [
+    { "src": "/api/distance",       "dest": "/api/distance.js" },
     { "src": "/api/payment/intent", "dest": "/api/payment/intent.js" },
     { "src": "/api/payment",        "dest": "/api/payment/index.js" },
     { "src": "/api/register",       "dest": "/api/register.js" },
