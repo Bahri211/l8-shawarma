@@ -317,7 +317,7 @@
     }
 
     // ---- STRIPE ----
-    const stripeKey = window.STRIPE_PUBLIC_KEY || 'pk_test_YOUR_PUBLISHABLE_KEY_HERE';
+    const stripeKey = window.STRIPE_PUBLIC_KEY || 'pk_test_51T4kvT9PpJ5u93penIxhLEJ2qsU9XghVfdzgQcyrNzVtTcGSy9WguAcP1ybdlzDEViWSrk7KLOJOaV1zA1A25LiY00AmbcWElF';
     stripe = Stripe(stripeKey);
     const elements = stripe.elements();
     cardElement = elements.create('card', {
