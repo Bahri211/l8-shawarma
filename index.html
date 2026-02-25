@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>L8 Shawarma – Fresh Authentic Shawarma on Lodge Lane</title>
+  <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Cairo:wght@400;600;700&display=swap" rel="stylesheet"/>
+</head>
+<body>
+
+  <!-- ═══════════════════════════ NAV ═══════════════════════════ -->
+  <nav id="navbar">
+    <div class="nav-logo">L8 <span>Shawarma</span></div>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="#home">Home</a></li>
+      <li><a href="#menu">Menu</a></li>
+      <li><a href="#about">About</a></li>
+      <li><a href="#contact">Contact</a></li>
+      <li><a href="login.html">Login</a></li>
+    </ul>
+    <a href="#order" class="nav-order-btn">Order Now</a>
+    <div class="hamburger" id="hamburger" onclick="toggleMenu()">
+      <span></span><span></span><span></span>
+    </div>
+  </nav>
+
+  <!-- ═══════════════════════════ HERO ═══════════════════════════ -->
+  <section id="home" class="hero">
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+      <p class="hero-tag">🌯 Lodge Lane's Favourite Takeaway</p>
+      <h1 class="hero-title">Fresh. Authentic.<br><span>Shawarma.</span></h1>
+      <p class="hero-subtitle">Freshly carved meat, bold spices, and real flavour — right in the heart of L8, Liverpool.</p>
+      <div class="hero-btns">
+        <a href="#order" class="btn btn-fire">🔥 Order Now</a>
+        <a href="#menu" class="btn btn-outline">View Menu</a>
+      </div>
+      <a href="tel:+441234567890" class="call-btn">📞 Call to Order</a>
+    </div>
+    <div class="hero-scroll-hint">↓ Scroll Down</div>
+  </section>
+
+  <!-- ═══════════════════════════ MENU ═══════════════════════════ -->
+  <section id="menu" class="section menu-section">
+    <div class="section-header">
+      <p class="section-tag">What We Serve</p>
+      <h2 class="section-title">Our Menu</h2>
+      <p class="section-sub">Everything made fresh, every day. No shortcuts.</p>
+    </div>
+
+    <!-- Wraps -->
+    <div class="menu-category">
+      <h3 class="category-title">🌯 Shawarma Wraps</h3>
+      <div class="menu-grid">
+        <div class="menu-item">
+          <div class="item-info">
+            <span class="item-name">Chicken Shawarma Wrap</span>
+            <span class="item-desc">Grilled chicken, garlic sauce, pickles, fresh veg</span>
+          </div>
+          <span class="item-price">£5.99</span>
+        </div>
+        <div class="menu-item">
+          <div class="item-info">
+            <span class="item-name">Lamb Shawarma Wrap</span>
+            <span class="item-desc">Slow-carved lamb, tahini, sumac onions, parsley</span>
+          </div>
+          <span class="item-price">£6.99</span>
+        </div>
+        <div class="menu-item">
+          <div class="item-info">
+            <span class="item-name">Mixed Shawarma Wrap</span>
+            <span class="item-desc">Chicken & lamb combo with all the sauces</span>
+          </div>
+          <span class="item-price">£7.49</span>
+        </div>
+        <div class="menu-item popular">
+          <div class="item-info">
+            <span class="item-name">Spicy Chicken Wrap <span class="badge">🔥 Popular</span></span>
+            <span class="item-desc">Fiery marinated chicken, chilli sauce, jalapeños</span>
+          </div>
+          <span class="item-price">£6.49</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Platters -->
+    <div class="menu-category">
+      <h3 class="category-title">🍽️ Platters</h3>
+      <div class="menu-grid">
+        <div class="menu-item">
+          <div class="item-info">
+            <span class="item-name">Chicken Platter</span>
+            <span class="item-desc">Rice, salad, garlic sauce, pita bread</span>
+          </div>
+          <span class="item-price">£9.99</span>
+        </div>
+        <div class="menu-item popular">
+          <div class="item-info">
+            <span class="item-name">Family Sharing Platter <span class="badge">⭐ Best Value</span></span>
+            <span class="item-desc">Serves 3–4: mixed meats, rice, salads, sauces & bread</span>
+          </div>
+          <span class="item-price">£24.99</span>
+        </div>
+        <div class="menu-item">
+          <div class="item-info">
+            <span class="item-name">Lamb Platter</span>
+            <span class="item-desc">Tender lamb, saffron rice, tzatziki, salad</span>
+          </div>
+          <span class="item-price">£11.99</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Vegetarian -->
+    <div class="menu-category">
+      <h3 class="category-title">🥙 Vegetarian Options</h3>
+      <div class="menu-grid">
+        <div class="menu-item">
+          <div class="item-info">
+            <span class="item-name">Falafel Wrap</span>
+            <span class="item-desc">Crispy falafel, hummus, tomato, cucumber, tahini</span>
+          </div>
+          <span class="item-price">£4.99</span>
+        </div>
+        <div class="menu-item">
+          <div class="item-info">
+            <span class="item-name">Veggie Platter</span>
+            <span class="item-desc">Falafel, hummus, salad, pita & dips</span>
+          </div>
+          <span class="item-price">£8.49</span>
+        </div>
+        <div class="menu-item">
+          <div class="item-info">
+            <span class="item-name">Hummus & Pita</span>
+            <span class="item-desc">House-made hummus with warm pita bread</span>
+          </div>
+          <span class="item-price">£3.49</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sides -->
+    <div class="menu-category">
+      <h3 class="category-title">🍟 Sides</h3>
+      <div class="menu-grid">
+        <div class="menu-item">
+          <div class="item-info"><span class="item-name">Chips</span><span class="item-desc">Crispy golden fries</span></div>
+          <span class="item-price">£2.49</span>
+        </div>
+        <div class="menu-item">
+          <div class="item-info"><span class="item-name">Seasoned Fries</span><span class="item-desc">Fries with our house spice blend</span></div>
+          <span class="item-price">£2.99</span>
+        </div>
+        <div class="menu-item">
+          <div class="item-info"><span class="item-name">Garlic Bread</span><span class="item-desc">Toasted pita with garlic butter</span></div>
+          <span class="item-price">£1.99</span>
+        </div>
+        <div class="menu-item">
+          <div class="item-info"><span class="item-name">Side Salad</span><span class="item-desc">Fresh mixed salad with lemon dressing</span></div>
+          <span class="item-price">£2.49</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Drinks -->
+    <div class="menu-category">
+      <h3 class="category-title">🥤 Drinks</h3>
+      <div class="menu-grid">
+        <div class="menu-item">
+          <div class="item-info"><span class="item-name">Soft Drinks (Can)</span><span class="item-desc">Coke, Pepsi, Fanta, 7Up</span></div>
+          <span class="item-price">£1.00</span>
+        </div>
+        <div class="menu-item">
+          <div class="item-info"><span class="item-name">Still Water</span></div>
+          <span class="item-price">£0.80</span>
+        </div>
+        <div class="menu-item">
+          <div class="item-info"><span class="item-name">Fresh Mango Juice</span><span class="item-desc">100% natural</span></div>
+          <span class="item-price">£2.49</span>
+        </div>
+        <div class="menu-item">
+          <div class="item-info"><span class="item-name">Ayran (Yoghurt Drink)</span><span class="item-desc">Chilled, salted yoghurt drink</span></div>
+          <span class="item-price">£1.99</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════ ORDER SECTION ═══════════════════════════ -->
+  <section id="order" class="section order-section">
+    <div class="order-inner">
+      <p class="section-tag" style="color:var(--gold)">Ready to Eat?</p>
+      <h2 class="section-title" style="color:#fff">Place Your Order</h2>
+      <p class="section-sub" style="color:#ccc">Order directly with us or via your favourite delivery app.</p>
+      <div class="order-btns">
+        <a href="checkout.html" class="btn btn-fire big-btn">🛒 Order &amp; Pay Online</a>
+        <a href="https://www.ubereats.com" target="_blank" class="btn btn-outline-light big-btn">UberEats</a>
+        <a href="https://www.deliveroo.co.uk" target="_blank" class="btn btn-outline-light big-btn">Deliveroo</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════ ABOUT ═══════════════════════════ -->
+  <section id="about" class="section about-section">
+    <div class="about-inner">
+      <div class="about-text">
+        <p class="section-tag">Our Story</p>
+        <h2 class="section-title">Proud Part of the L8 Community</h2>
+        <p>Lodge Lane has always been Liverpool's most vibrant, multicultural street — and L8 Shawarma is proud to be a part of it. We opened our doors to bring the authentic flavours of the Middle East to the heart of Liverpool 8.</p>
+        <p>Every wrap we make, every platter we serve, is prepared fresh with quality ingredients and real care. Whether you're grabbing a quick lunch or feeding the family on a Friday night, we've got you covered.</p>
+        <p>We believe great food shouldn't cost a fortune. That's why our portions are generous, our prices are fair, and our flavours are always on point.</p>
+      </div>
+      <div class="about-badge">
+        <div class="badge-circle">
+          <span class="badge-num">L8</span>
+          <span class="badge-label">Liverpool's Own</span>
+          <span class="badge-year">Est. 2025</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════ CONTACT ═══════════════════════════ -->
+  <section id="contact" class="section contact-section">
+    <div class="section-header">
+      <p class="section-tag">Find Us</p>
+      <h2 class="section-title">Location &amp; Contact</h2>
+    </div>
+    <div class="contact-grid">
+      <div class="contact-info">
+        <div class="info-block">
+          <span class="info-icon">📍</span>
+          <div>
+            <strong>Address</strong>
+            <p>41 Lodge Lane, Liverpool L8 0QT<br>United Kingdom</p>
+          </div>
+        </div>
+        <div class="info-block">
+          <span class="info-icon">📞</span>
+          <div>
+            <strong>Phone</strong>
+            <p><a href="tel:+441234567890">0XX XXXX XXXX</a><br><small>(Contact owner for exact number)</small></p>
+          </div>
+        </div>
+        <div class="info-block">
+          <span class="info-icon">✉️</span>
+          <div>
+            <strong>Email</strong>
+            <p><a href="mailto:hello@l8shawarma.co.uk">hello@l8shawarma.co.uk</a></p>
+          </div>
+        </div>
+        <div class="info-block">
+          <span class="info-icon">🕐</span>
+          <div>
+            <strong>Opening Hours</strong>
+            <table class="hours-table">
+              <tr><td>Monday – Thursday</td><td>11:00 – 23:00</td></tr>
+              <tr><td>Friday – Saturday</td><td>11:00 – 01:00</td></tr>
+              <tr><td>Sunday</td><td>12:00 – 22:00</td></tr>
+            </table>
+          </div>
+        </div>
+        <a href="https://www.google.com/maps/dir/?api=1&destination=41+Lodge+Lane,+Liverpool+L8+0QT" target="_blank" class="btn btn-fire directions-btn">🗺️ Get Directions</a>
+        <a href="tel:+441234567890" class="btn btn-outline mobile-call-btn">📞 Call to Order</a>
+      </div>
+      <div class="map-wrapper">
+        <iframe
+          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2374.2!2d-2.955!3d53.393!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x487b213f7e5ed22d%3A0x0!2s41+Lodge+Ln%2C+Liverpool+L8+0QT!5e0!3m2!1sen!2suk!4v1700000000000"
+          width="100%" height="400" style="border:0;" allowfullscreen="" loading="lazy"
+          referrerpolicy="no-referrer-when-downgrade">
+        </iframe>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════ FOOTER ═══════════════════════════ -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-logo">L8 <span>Shawarma</span></div>
+      <p class="footer-tagline">Fresh Authentic Shawarma · Lodge Lane · Liverpool L8</p>
+      <div class="footer-socials">
+        <a href="https://www.instagram.com/l8shawarma" target="_blank" class="social-link">📸 Instagram</a>
+        <a href="https://www.tiktok.com/@l8shawarma" target="_blank" class="social-link">🎵 TikTok</a>
+        <a href="https://www.facebook.com/l8shawarma" target="_blank" class="social-link">👍 Facebook</a>
+      </div>
+      <p class="footer-copy">© 2025 L8 Shawarma. All rights reserved. | Website designed by <strong>Your Name / Company</strong></p>
+    </div>
+  </footer>
+
+  <script>
+    function toggleMenu() {
+      document.getElementById('navLinks').classList.toggle('open');
+    }
+    // Shrink nav on scroll
+    window.addEventListener('scroll', () => {
+      const nav = document.getElementById('navbar');
+      nav.classList.toggle('scrolled', window.scrollY > 60);
+    });
+  </script>
+</body>
+</html>

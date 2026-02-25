@@ -1,0 +1,10 @@
+{
+  "name": "l8-shawarma",
+  "version": "1.0.0",
+  "description": "L8 Shawarma website with Stripe payments",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "jsonwebtoken": "^9.0.2",
+    "stripe": "^14.0.0"
+  }
+}
