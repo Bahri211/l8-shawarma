@@ -1,20 +1,17 @@
 {
   "version": 2,
   "builds": [
-    {
-      "src": "api/**/*.js",
-      "use": "@vercel/node"
-    },
-    {
-      "src": "*.html",
-      "use": "@vercel/static"
-    }
+    { "src": "api/**/*.js", "use": "@vercel/node" },
+    { "src": "*.html",      "use": "@vercel/static" },
+    { "src": "*.css",       "use": "@vercel/static" }
   ],
   "routes": [
-    { "src": "/api/(.*)", "dest": "/api/$1" },
-    { "src": "/", "dest": "/index.html" },
-    { "src": "/(.*\\.html)", "dest": "/$1" },
-    { "src": "/(.*\\.css)", "dest": "/$1" },
-    { "src": "/(.*\\.js)", "dest": "/$1" }
+    { "src": "/api/payment/intent", "dest": "/api/payment/intent.js" },
+    { "src": "/api/payment",        "dest": "/api/payment/index.js" },
+    { "src": "/api/register",       "dest": "/api/register.js" },
+    { "src": "/api/login",          "dest": "/api/login.js" },
+    { "src": "/",                   "dest": "/index.html" },
+    { "src": "/(.*\\.html)",        "dest": "/$1" },
+    { "src": "/(.*\\.css)",         "dest": "/$1" }
   ]
 }
