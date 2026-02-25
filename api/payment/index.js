@@ -1,4 +1,6 @@
 // api/payment/index.js — Vercel Serverless Function
+// Handles final order confirmation after payment is processed
+
 module.exports = async (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
@@ -15,7 +17,7 @@ module.exports = async (req, res) => {
       return res.status(400).json({ error: 'Missing order information.' });
 
     const order = {
-      orderId:           `L8-${Date.now()}`,
+      orderId:           `SP-${Date.now()}`,
       delivery,
       items,
       total:             totalAmount,
@@ -26,7 +28,9 @@ module.exports = async (req, res) => {
       estimatedDelivery: '25-40 minutes'
     };
 
-    console.log('🔥 New order:', order);
+    console.log('🍕 New order:', order);
+
+    // TODO: Save order to database (MongoDB / Supabase etc.)
 
     res.json({ message: 'Order placed successfully!', order });
 

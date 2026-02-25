@@ -1,14 +1,7 @@
 // api/register.js — Vercel Serverless Function
-const bcrypt = require('bcryptjs');
-const jwt    = require('jsonwebtoken');
-
-// In-memory store (resets on cold start — fine for testing)
-// For production swap with a real DB like MongoDB Atlas (free tier)
-if (!global._users) global._users = [];
-const users = global._users;
+// Handles new user registration
 
 module.exports = async (req, res) => {
-  // Allow CORS
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
@@ -17,37 +10,44 @@ module.exports = async (req, res) => {
   if (req.method !== 'POST')
     return res.status(405).json({ error: 'Method not allowed' });
 
-  const { name, email, password, phone } = req.body;
+  try {
+    const { name, email, phone, password } = req.body;
 
-  if (!name || !email || !password)
-    return res.status(400).json({ error: 'Name, email and password are required.' });
+    // Validate required fields
+    if (!name || !email || !password)
+      return res.status(400).json({ error: 'Name, email and password are required.' });
 
-  if (password.length < 8)
-    return res.status(400).json({ error: 'Password must be at least 8 characters.' });
+    if (password.length < 6)
+      return res.status(400).json({ error: 'Password must be at least 6 characters.' });
 
-  const exists = users.find(u => u.email === email.toLowerCase());
-  if (exists)
-    return res.status(400).json({ error: 'An account with this email already exists.' });
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email))
+      return res.status(400).json({ error: 'Invalid email address.' });
 
-  const hashed = await bcrypt.hash(password, 12);
-  const user = {
-    id: Date.now().toString(),
-    name: name.trim(),
-    email: email.toLowerCase().trim(),
-    phone: phone || '',
-    password: hashed
-  };
-  users.push(user);
+    // TODO: Check if user already exists in your database
+    // TODO: Hash password with bcrypt before storing
+    // Example with bcrypt:
+    //   const bcrypt = require('bcrypt');
+    //   const hashedPassword = await bcrypt.hash(password, 10);
 
-  const token = jwt.sign(
-    { id: user.id, email: user.email, name: user.name },
-    process.env.JWT_SECRET || 'l8shawarma_secret',
-    { expiresIn: '7d' }
-  );
+    // TODO: Save user to database (MongoDB / Supabase / PostgreSQL etc.)
+    const newUser = {
+      id:        `user-${Date.now()}`,
+      name,
+      email,
+      phone:     phone || null,
+      createdAt: new Date().toISOString()
+    };
 
-  res.status(201).json({
-    message: 'Account created successfully!',
-    token,
-    user: { id: user.id, name: user.name, email: user.email }
-  });
+    console.log('👤 New user registered:', newUser.email);
+
+    res.status(201).json({
+      message: 'Account created successfully.',
+      user: { id: newUser.id, name: newUser.name, email: newUser.email }
+    });
+
+  } catch (err) {
+    console.error('Register error:', err);
+    res.status(500).json({ error: 'Registration failed. Please try again.' });
+  }
 };

@@ -1,4 +1,6 @@
 // api/payment/intent.js — Vercel Serverless Function
+// Creates a Stripe PaymentIntent so the frontend can confirm card payment
+
 const Stripe = require('stripe');
 
 module.exports = async (req, res) => {
@@ -12,15 +14,15 @@ module.exports = async (req, res) => {
 
   try {
     const stripe = Stripe(process.env.STRIPE_SECRET_KEY);
-    const { amount, currency = 'gbp' } = req.body;
+    const { amount, currency = 'dkk' } = req.body;
 
     if (!amount || amount <= 0)
       return res.status(400).json({ error: 'Invalid order amount.' });
 
     const paymentIntent = await stripe.paymentIntents.create({
-      amount:   Math.round(amount * 100), // convert to pence
+      amount:   Math.round(amount * 100), // convert to øre (smallest DKK unit)
       currency,
-      metadata: { business: 'L8 Shawarma' }
+      metadata: { business: 'Scandinavian Stenovns Pizza' }
     });
 
     res.json({

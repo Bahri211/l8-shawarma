@@ -1,9 +1,5 @@
 // api/login.js — Vercel Serverless Function
-const bcrypt = require('bcryptjs');
-const jwt    = require('jsonwebtoken');
-
-if (!global._users) global._users = [];
-const users = global._users;
+// Handles user login
 
 module.exports = async (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -14,28 +10,34 @@ module.exports = async (req, res) => {
   if (req.method !== 'POST')
     return res.status(405).json({ error: 'Method not allowed' });
 
-  const { email, password } = req.body;
+  try {
+    const { email, password } = req.body;
 
-  if (!email || !password)
-    return res.status(400).json({ error: 'Email and password are required.' });
+    if (!email || !password)
+      return res.status(400).json({ error: 'Email and password are required.' });
 
-  const user = users.find(u => u.email === email.toLowerCase().trim());
-  if (!user)
-    return res.status(401).json({ error: 'No account found with that email.' });
+    // TODO: Look up user in your database by email
+    // TODO: Compare hashed password with bcrypt:
+    //   const bcrypt = require('bcrypt');
+    //   const match = await bcrypt.compare(password, user.hashedPassword);
+    //   if (!match) return res.status(401).json({ error: 'Invalid email or password.' });
 
-  const match = await bcrypt.compare(password, user.password);
-  if (!match)
-    return res.status(401).json({ error: 'Incorrect password.' });
+    // TODO: Generate a JWT token for session management:
+    //   const jwt = require('jsonwebtoken');
+    //   const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET, { expiresIn: '7d' });
 
-  const token = jwt.sign(
-    { id: user.id, email: user.email, name: user.name },
-    process.env.JWT_SECRET || 'l8shawarma_secret',
-    { expiresIn: '7d' }
-  );
+    // ---- PLACEHOLDER (remove once database is connected) ----
+    if (email === 'test@pizza.dk' && password === 'test123') {
+      return res.json({
+        message: 'Login successful.',
+        user: { id: 'demo-user', name: 'Demo User', email }
+      });
+    }
+    return res.status(401).json({ error: 'Invalid email or password.' });
+    // ----------------------------------------------------------
 
-  res.json({
-    message: 'Login successful!',
-    token,
-    user: { id: user.id, name: user.name, email: user.email }
-  });
+  } catch (err) {
+    console.error('Login error:', err);
+    res.status(500).json({ error: 'Login failed. Please try again.' });
+  }
 };

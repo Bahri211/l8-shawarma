@@ -1,554 +1,533 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="da">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>L8 Shawarma – Fresh Authentic Shawarma on Lodge Lane</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Scandinavian Stenovns Pizza – Horsens</title>
   <link rel="stylesheet" href="style.css" />
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Cairo:wght@400;600;700&display=swap" rel="stylesheet"/>
-  <style>
-    /* ── ADD BUTTON ── */
-    .menu-item { position: relative; }
-    .add-btn {
-      background: var(--fire); color: #fff; border: none;
-      width: 32px; height: 32px; border-radius: 50%;
-      font-size: 1.3rem; line-height: 1; cursor: pointer;
-      display: flex; align-items: center; justify-content: center;
-      flex-shrink: 0; transition: all 0.2s;
-      box-shadow: 0 3px 10px rgba(232,66,10,0.3);
-    }
-    .add-btn:hover { background: #c73309; transform: scale(1.1); }
-
-    .item-right { display: flex; align-items: center; gap: 12px; flex-shrink: 0; }
-
-    /* ── FLOATING CART BUTTON ── */
-    .cart-fab {
-      position: fixed; bottom: 28px; right: 28px; z-index: 500;
-      background: var(--fire); color: #fff;
-      border: none; border-radius: 50px;
-      padding: 14px 24px;
-      font-family: 'Cairo', sans-serif; font-weight: 700; font-size: 1rem;
-      cursor: pointer; display: none; align-items: center; gap: 10px;
-      box-shadow: 0 8px 30px rgba(232,66,10,0.5);
-      transition: all 0.3s; animation: slideUp 0.3s ease both;
-    }
-    .cart-fab.visible { display: flex; }
-    .cart-fab:hover { background: #c73309; transform: translateY(-3px); }
-    .cart-fab-count {
-      background: #fff; color: var(--fire);
-      width: 24px; height: 24px; border-radius: 50%;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 0.85rem; font-weight: 700;
-    }
-
-    /* ── CART DRAWER ── */
-    .cart-overlay {
-      position: fixed; inset: 0; z-index: 800;
-      background: rgba(0,0,0,0.5); display: none;
-    }
-    .cart-overlay.open { display: block; }
-
-    .cart-drawer {
-      position: fixed; right: 0; top: 0; bottom: 0; z-index: 900;
-      width: 380px; max-width: 95vw;
-      background: #fff; display: flex; flex-direction: column;
-      transform: translateX(100%); transition: transform 0.3s ease;
-      box-shadow: -8px 0 40px rgba(0,0,0,0.2);
-    }
-    .cart-drawer.open { transform: translateX(0); }
-
-    .cart-header {
-      padding: 24px; border-bottom: 1px solid var(--border);
-      display: flex; align-items: center; justify-content: space-between;
-      background: var(--dark);
-    }
-    .cart-header h3 {
-      font-family: 'Playfair Display', serif;
-      font-size: 1.4rem; color: #fff;
-    }
-    .cart-close {
-      background: rgba(255,255,255,0.1); border: none;
-      color: #fff; width: 36px; height: 36px; border-radius: 50%;
-      font-size: 1.2rem; cursor: pointer; transition: background 0.2s;
-    }
-    .cart-close:hover { background: rgba(255,255,255,0.2); }
-
-    .cart-items {
-      flex: 1; overflow-y: auto; padding: 20px;
-    }
-
-    .cart-empty {
-      text-align: center; padding: 60px 20px; color: var(--light-text);
-    }
-    .cart-empty-icon { font-size: 3rem; margin-bottom: 12px; }
-    .cart-empty p { font-size: 1rem; }
-
-    .cart-item {
-      display: flex; align-items: center; gap: 12px;
-      padding: 14px 0; border-bottom: 1px solid var(--border);
-    }
-    .cart-item-info { flex: 1; }
-    .cart-item-name { font-weight: 700; font-size: 0.95rem; color: var(--dark); }
-    .cart-item-price { font-size: 0.88rem; color: var(--fire); font-weight: 700; }
-
-    .cart-item-qty {
-      display: flex; align-items: center; gap: 8px;
-    }
-    .qty-btn {
-      width: 28px; height: 28px; border-radius: 50%;
-      border: 1.5px solid var(--border); background: var(--cream);
-      font-size: 1rem; cursor: pointer; display: flex;
-      align-items: center; justify-content: center;
-      transition: all 0.15s; font-weight: 700; color: var(--text);
-    }
-    .qty-btn:hover { border-color: var(--fire); color: var(--fire); }
-    .qty-num { font-weight: 700; font-size: 0.95rem; min-width: 20px; text-align: center; }
-
-    .cart-footer {
-      padding: 20px; border-top: 2px solid var(--border);
-      background: var(--cream);
-    }
-    .cart-subtotal {
-      display: flex; justify-content: space-between;
-      font-size: 0.95rem; color: var(--light-text); margin-bottom: 8px;
-    }
-    .cart-total {
-      display: flex; justify-content: space-between;
-      font-weight: 700; font-size: 1.1rem; color: var(--dark);
-      margin-bottom: 16px; padding-top: 8px;
-      border-top: 1px solid var(--border);
-    }
-    .checkout-btn {
-      display: block; width: 100%; padding: 16px;
-      background: var(--fire); color: #fff; border: none;
-      border-radius: 50px; font-family: 'Cairo', sans-serif;
-      font-weight: 700; font-size: 1.05rem; cursor: pointer;
-      text-align: center; text-decoration: none;
-      transition: all 0.2s;
-    }
-    .checkout-btn:hover { background: #c73309; transform: translateY(-1px); }
-
-    /* ── ITEM ADDED TOAST ── */
-    .toast {
-      position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%);
-      background: var(--dark); color: #fff;
-      padding: 12px 24px; border-radius: 50px;
-      font-family: 'Cairo', sans-serif; font-weight: 600; font-size: 0.9rem;
-      z-index: 1000; opacity: 0; transition: opacity 0.3s;
-      pointer-events: none; white-space: nowrap;
-    }
-    .toast.show { opacity: 1; }
-
-    @keyframes slideUp { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
-  </style>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
 </head>
 <body>
 
-  <!-- ═══ NAV ═══ -->
-  <nav id="navbar">
-    <div class="nav-logo">L8 <span>Shawarma</span></div>
-    <ul class="nav-links" id="navLinks">
-      <li><a href="#home">Home</a></li>
-      <li><a href="#menu">Menu</a></li>
-      <li><a href="#about">About</a></li>
-      <li><a href="#contact">Contact</a></li>
-      <li><a href="login.html">Login</a></li>
-    </ul>
-    <a href="#menu" class="nav-order-btn" onclick="document.getElementById('menu').scrollIntoView({behavior:'smooth'}); return false;">Order Now</a>
-    <div class="hamburger" id="hamburger" onclick="toggleMenu()">
-      <span></span><span></span><span></span>
+  <!-- NAV -->
+  <nav class="navbar">
+    <div class="nav-inner">
+      <a class="brand" href="/">
+        <span class="brand-icon">🍕</span>
+        <span class="brand-text">Scandinavian<br/><em>Stenovns Pizza</em></span>
+      </a>
+      <ul class="nav-links">
+        <li><a href="#menu">Menu</a></li>
+        <li><a href="#about">Om Os</a></li>
+        <li><a href="#contact">Kontakt</a></li>
+        <li><a class="btn-order" href="checkout.html">Bestil Nu</a></li>
+      </ul>
+      <button class="burger" id="burger" aria-label="menu">
+        <span></span><span></span><span></span>
+      </button>
     </div>
   </nav>
 
-  <!-- ═══ HERO ═══ -->
-  <section id="home" class="hero">
-    <div class="hero-overlay"></div>
+  <!-- MOBILE MENU -->
+  <div class="mobile-menu" id="mobileMenu">
+    <ul>
+      <li><a href="#menu">Menu</a></li>
+      <li><a href="#about">Om Os</a></li>
+      <li><a href="#contact">Kontakt</a></li>
+      <li><a class="btn-order-mobile" href="checkout.html">Bestil Nu</a></li>
+    </ul>
+  </div>
+
+  <!-- HERO -->
+  <header class="hero">
+    <div class="hero-bg"></div>
     <div class="hero-content">
-      <p class="hero-tag">🌯 Lodge Lane's Favourite Takeaway</p>
-      <h1 class="hero-title">Fresh. Authentic.<br><span>Shawarma.</span></h1>
-      <p class="hero-subtitle">Freshly carved meat, bold spices, and real flavour — right in the heart of L8, Liverpool.</p>
-      <div class="hero-btns">
-        <a href="#menu" class="btn btn-fire" onclick="document.getElementById('menu').scrollIntoView({behavior:'smooth'}); return false;">🔥 Order Now</a>
-        <a href="#menu" class="btn btn-outline">View Menu</a>
+      <p class="hero-tag">Horsens · Stenovnsbagt · Siden 2018</p>
+      <h1>Ægte Italiensk<br/><span>Stenovnspizza</span></h1>
+      <p class="hero-sub">Håndlavet dej, friske råvarer og kærlighed bagt direkte fra vores italienske stenovn til dit bord.</p>
+      <div class="hero-cta">
+        <a class="btn-primary" href="checkout.html">Bestil Takeaway</a>
+        <a class="btn-ghost" href="#menu">Se Menuen</a>
       </div>
-      <a href="tel:+441234567890" class="call-btn">📞 Call to Order</a>
-    </div>
-    <div class="hero-scroll-hint">↓ Scroll Down</div>
-  </section>
-
-  <!-- ═══ MENU ═══ -->
-  <section id="menu" class="section menu-section">
-    <div class="section-header">
-      <p class="section-tag">What We Serve</p>
-      <h2 class="section-title">Our Menu</h2>
-      <p class="section-sub">Tap + to add items to your cart, then checkout when ready.</p>
-    </div>
-
-    <!-- Wraps -->
-    <div class="menu-category">
-      <h3 class="category-title">🌯 Shawarma Wraps</h3>
-      <div class="menu-grid">
-        <div class="menu-item">
-          <div class="item-info">
-            <span class="item-name">Chicken Shawarma Wrap</span>
-            <span class="item-desc">Grilled chicken, garlic sauce, pickles, fresh veg</span>
-          </div>
-          <div class="item-right">
-            <span class="item-price">£5.99</span>
-            <button class="add-btn" onclick="addToCart('Chicken Shawarma Wrap', 5.99)">+</button>
-          </div>
-        </div>
-        <div class="menu-item">
-          <div class="item-info">
-            <span class="item-name">Lamb Shawarma Wrap</span>
-            <span class="item-desc">Slow-carved lamb, tahini, sumac onions, parsley</span>
-          </div>
-          <div class="item-right">
-            <span class="item-price">£6.99</span>
-            <button class="add-btn" onclick="addToCart('Lamb Shawarma Wrap', 6.99)">+</button>
-          </div>
-        </div>
-        <div class="menu-item">
-          <div class="item-info">
-            <span class="item-name">Mixed Shawarma Wrap</span>
-            <span class="item-desc">Chicken &amp; lamb combo with all the sauces</span>
-          </div>
-          <div class="item-right">
-            <span class="item-price">£7.49</span>
-            <button class="add-btn" onclick="addToCart('Mixed Shawarma Wrap', 7.49)">+</button>
-          </div>
-        </div>
-        <div class="menu-item popular">
-          <div class="item-info">
-            <span class="item-name">Spicy Chicken Wrap <span class="badge">🔥 Popular</span></span>
-            <span class="item-desc">Fiery marinated chicken, chilli sauce, jalapeños</span>
-          </div>
-          <div class="item-right">
-            <span class="item-price">£6.49</span>
-            <button class="add-btn" onclick="addToCart('Spicy Chicken Wrap', 6.49)">+</button>
-          </div>
-        </div>
+      <div class="hero-badges">
+        <div class="badge"><span>⏱</span> 25–40 min levering</div>
+        <div class="badge"><span>⭐</span> 4.8 stjerner</div>
+        <div class="badge"><span>🔥</span> Bagt i stenovn</div>
       </div>
     </div>
-
-    <!-- Platters -->
-    <div class="menu-category">
-      <h3 class="category-title">🍽️ Platters</h3>
-      <div class="menu-grid">
-        <div class="menu-item">
-          <div class="item-info">
-            <span class="item-name">Chicken Platter</span>
-            <span class="item-desc">Rice, salad, garlic sauce, pita bread</span>
-          </div>
-          <div class="item-right">
-            <span class="item-price">£9.99</span>
-            <button class="add-btn" onclick="addToCart('Chicken Platter', 9.99)">+</button>
-          </div>
-        </div>
-        <div class="menu-item popular">
-          <div class="item-info">
-            <span class="item-name">Family Sharing Platter <span class="badge">⭐ Best Value</span></span>
-            <span class="item-desc">Serves 3–4: mixed meats, rice, salads, sauces &amp; bread</span>
-          </div>
-          <div class="item-right">
-            <span class="item-price">£24.99</span>
-            <button class="add-btn" onclick="addToCart('Family Sharing Platter', 24.99)">+</button>
-          </div>
-        </div>
-        <div class="menu-item">
-          <div class="item-info">
-            <span class="item-name">Lamb Platter</span>
-            <span class="item-desc">Tender lamb, saffron rice, tzatziki, salad</span>
-          </div>
-          <div class="item-right">
-            <span class="item-price">£11.99</span>
-            <button class="add-btn" onclick="addToCart('Lamb Platter', 11.99)">+</button>
-          </div>
-        </div>
+    <div class="hero-graphic">
+      <div class="pizza-circle">
+        <div class="pizza-img">🍕</div>
       </div>
     </div>
+  </header>
 
-    <!-- Vegetarian -->
-    <div class="menu-category">
-      <h3 class="category-title">🥙 Vegetarian Options</h3>
-      <div class="menu-grid">
-        <div class="menu-item">
-          <div class="item-info">
-            <span class="item-name">Falafel Wrap</span>
-            <span class="item-desc">Crispy falafel, hummus, tomato, cucumber, tahini</span>
-          </div>
-          <div class="item-right">
-            <span class="item-price">£4.99</span>
-            <button class="add-btn" onclick="addToCart('Falafel Wrap', 4.99)">+</button>
-          </div>
-        </div>
-        <div class="menu-item">
-          <div class="item-info">
-            <span class="item-name">Veggie Platter</span>
-            <span class="item-desc">Falafel, hummus, salad, pita &amp; dips</span>
-          </div>
-          <div class="item-right">
-            <span class="item-price">£8.49</span>
-            <button class="add-btn" onclick="addToCart('Veggie Platter', 8.49)">+</button>
-          </div>
-        </div>
-        <div class="menu-item">
-          <div class="item-info">
-            <span class="item-name">Hummus &amp; Pita</span>
-            <span class="item-desc">House-made hummus with warm pita bread</span>
-          </div>
-          <div class="item-right">
-            <span class="item-price">£3.49</span>
-            <button class="add-btn" onclick="addToCart('Hummus & Pita', 3.49)">+</button>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Sides -->
-    <div class="menu-category">
-      <h3 class="category-title">🍟 Sides</h3>
-      <div class="menu-grid">
-        <div class="menu-item">
-          <div class="item-info"><span class="item-name">Chips</span><span class="item-desc">Crispy golden fries</span></div>
-          <div class="item-right"><span class="item-price">£2.49</span><button class="add-btn" onclick="addToCart('Chips', 2.49)">+</button></div>
-        </div>
-        <div class="menu-item">
-          <div class="item-info"><span class="item-name">Seasoned Fries</span><span class="item-desc">Fries with our house spice blend</span></div>
-          <div class="item-right"><span class="item-price">£2.99</span><button class="add-btn" onclick="addToCart('Seasoned Fries', 2.99)">+</button></div>
-        </div>
-        <div class="menu-item">
-          <div class="item-info"><span class="item-name">Garlic Bread</span><span class="item-desc">Toasted pita with garlic butter</span></div>
-          <div class="item-right"><span class="item-price">£1.99</span><button class="add-btn" onclick="addToCart('Garlic Bread', 1.99)">+</button></div>
-        </div>
-        <div class="menu-item">
-          <div class="item-info"><span class="item-name">Side Salad</span><span class="item-desc">Fresh mixed salad with lemon dressing</span></div>
-          <div class="item-right"><span class="item-price">£2.49</span><button class="add-btn" onclick="addToCart('Side Salad', 2.49)">+</button></div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Drinks -->
-    <div class="menu-category">
-      <h3 class="category-title">🥤 Drinks</h3>
-      <div class="menu-grid">
-        <div class="menu-item">
-          <div class="item-info"><span class="item-name">Soft Drinks (Can)</span><span class="item-desc">Coke, Pepsi, Fanta, 7Up</span></div>
-          <div class="item-right"><span class="item-price">£1.00</span><button class="add-btn" onclick="addToCart('Soft Drink (Can)', 1.00)">+</button></div>
-        </div>
-        <div class="menu-item">
-          <div class="item-info"><span class="item-name">Still Water</span></div>
-          <div class="item-right"><span class="item-price">£0.80</span><button class="add-btn" onclick="addToCart('Still Water', 0.80)">+</button></div>
-        </div>
-        <div class="menu-item">
-          <div class="item-info"><span class="item-name">Fresh Mango Juice</span><span class="item-desc">100% natural</span></div>
-          <div class="item-right"><span class="item-price">£2.49</span><button class="add-btn" onclick="addToCart('Fresh Mango Juice', 2.49)">+</button></div>
-        </div>
-        <div class="menu-item">
-          <div class="item-info"><span class="item-name">Ayran (Yoghurt Drink)</span><span class="item-desc">Chilled, salted yoghurt drink</span></div>
-          <div class="item-right"><span class="item-price">£1.99</span><button class="add-btn" onclick="addToCart('Ayran Yoghurt Drink', 1.99)">+</button></div>
-        </div>
+  <!-- CATEGORIES STRIP -->
+  <section class="category-strip">
+    <div class="container">
+      <div class="cats">
+        <button class="cat-btn active" data-cat="all">Alle</button>
+        <button class="cat-btn" data-cat="pizzaer">Pizzaer</button>
+        <button class="cat-btn" data-cat="special">Scandinavian Special</button>
+        <button class="cat-btn" data-cat="indbagt">Indbagte Pizzaer</button>
+        <button class="cat-btn" data-cat="sandwich">Pizzasandwiches</button>
+        <button class="cat-btn" data-cat="durum">Durum</button>
+        <button class="cat-btn" data-cat="alacarte">À la Carte</button>
+        <button class="cat-btn" data-cat="drinks">Drikkevarer</button>
       </div>
     </div>
   </section>
 
-  <!-- ═══ ABOUT ═══ -->
-  <section id="about" class="section about-section">
-    <div class="about-inner">
-      <div class="about-text">
-        <p class="section-tag">Our Story</p>
-        <h2 class="section-title">Proud Part of the L8 Community</h2>
-        <p>Lodge Lane has always been Liverpool's most vibrant, multicultural street — and L8 Shawarma is proud to be a part of it. We opened our doors to bring the authentic flavours of the Middle East to the heart of Liverpool 8.</p>
-        <p>Every wrap we make, every platter we serve, is prepared fresh with quality ingredients and real care. Whether you're grabbing a quick lunch or feeding the family on a Friday night, we've got you covered.</p>
-        <p>We believe great food shouldn't cost a fortune. That's why our portions are generous, our prices are fair, and our flavours are always on point.</p>
+  <!-- MENU -->
+  <main id="menu" class="menu-section">
+    <div class="container">
+      <div class="section-header">
+        <h2>Vores Menu</h2>
+        <p>Alle pizzaer er bagt i vores ægte italienske stenovn</p>
       </div>
-      <div class="about-badge">
-        <div class="badge-circle">
-          <span class="badge-num">L8</span>
-          <span class="badge-label">Liverpool's Own</span>
-          <span class="badge-year">Est. 2025</span>
-        </div>
-      </div>
-    </div>
-  </section>
 
-  <!-- ═══ CONTACT ═══ -->
-  <section id="contact" class="section contact-section">
-    <div class="section-header">
-      <p class="section-tag">Find Us</p>
-      <h2 class="section-title">Location &amp; Contact</h2>
-    </div>
-    <div class="contact-grid">
-      <div class="contact-info">
-        <div class="info-block">
-          <span class="info-icon">📍</span>
-          <div><strong>Address</strong><p>41 Lodge Lane, Liverpool L8 0QT<br>United Kingdom</p></div>
-        </div>
-        <div class="info-block">
-          <span class="info-icon">📞</span>
-          <div><strong>Phone</strong><p><a href="tel:+441234567890">0XX XXXX XXXX</a><br><small>(Contact owner for exact number)</small></p></div>
-        </div>
-        <div class="info-block">
-          <span class="info-icon">✉️</span>
-          <div><strong>Email</strong><p><a href="mailto:hello@l8shawarma.co.uk">hello@l8shawarma.co.uk</a></p></div>
-        </div>
-        <div class="info-block">
-          <span class="info-icon">🕐</span>
-          <div>
-            <strong>Opening Hours</strong>
-            <table class="hours-table">
-              <tr><td>Monday – Thursday</td><td>11:00 – 23:00</td></tr>
-              <tr><td>Friday – Saturday</td><td>11:00 – 01:00</td></tr>
-              <tr><td>Sunday</td><td>12:00 – 22:00</td></tr>
-            </table>
+      <div class="menu-grid" id="menuGrid">
+
+        <!-- PIZZAER -->
+        <div class="menu-item" data-cat="pizzaer">
+          <div class="item-badge">Populær</div>
+          <div class="item-info">
+            <h3>Margherita</h3>
+            <p>Tomatsauce, mozzarella, frisk basilikum</p>
+            <div class="item-footer">
+              <span class="price">89 kr</span>
+              <button class="add-btn" onclick="addToCart('Margherita', 89)">+ Tilføj</button>
+            </div>
           </div>
         </div>
-        <a href="https://www.google.com/maps/dir/?api=1&destination=41+Lodge+Lane,+Liverpool+L8+0QT" target="_blank" class="btn btn-fire directions-btn">🗺️ Get Directions</a>
-        <a href="tel:+441234567890" class="btn btn-outline mobile-call-btn">📞 Call to Order</a>
-      </div>
-      <div class="map-wrapper">
-        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2374.2!2d-2.955!3d53.393!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x487b213f7e5ed22d%3A0x0!2s41+Lodge+Ln%2C+Liverpool+L8+0QT!5e0!3m2!1sen!2suk!4v1700000000000"
-          width="100%" height="400" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
-      </div>
-    </div>
-  </section>
 
-  <!-- ═══ FOOTER ═══ -->
-  <footer class="footer">
-    <div class="footer-inner">
-      <div class="footer-logo">L8 <span>Shawarma</span></div>
-      <p class="footer-tagline">Fresh Authentic Shawarma · Lodge Lane · Liverpool L8</p>
-      <div class="footer-socials">
-        <a href="https://www.instagram.com/l8shawarma" target="_blank" class="social-link">📸 Instagram</a>
-        <a href="https://www.tiktok.com/@l8shawarma" target="_blank" class="social-link">🎵 TikTok</a>
-        <a href="https://www.facebook.com/l8shawarma" target="_blank" class="social-link">👍 Facebook</a>
-      </div>
-      <p class="footer-copy">© 2025 L8 Shawarma. All rights reserved.</p>
-    </div>
-  </footer>
+        <div class="menu-item" data-cat="pizzaer">
+          <div class="item-badge new">Ny</div>
+          <div class="item-info">
+            <h3>Pepperoni</h3>
+            <p>Tomatsauce, mozzarella, pepperoni</p>
+            <div class="item-footer">
+              <span class="price">99 kr</span>
+              <button class="add-btn" onclick="addToCart('Pepperoni', 99)">+ Tilføj</button>
+            </div>
+          </div>
+        </div>
 
-  <!-- ═══ FLOATING CART BUTTON ═══ -->
-  <button class="cart-fab" id="cartFab" onclick="openCart()">
-    🛒 View Cart <span class="cart-fab-count" id="cartCount">0</span>
-  </button>
+        <div class="menu-item" data-cat="pizzaer">
+          <div class="item-info">
+            <h3>Capricciosa</h3>
+            <p>Tomatsauce, mozzarella, skinke, champignon</p>
+            <div class="item-footer">
+              <span class="price">99 kr</span>
+              <button class="add-btn" onclick="addToCart('Capricciosa', 99)">+ Tilføj</button>
+            </div>
+          </div>
+        </div>
 
-  <!-- ═══ CART OVERLAY ═══ -->
-  <div class="cart-overlay" id="cartOverlay" onclick="closeCart()"></div>
+        <div class="menu-item" data-cat="pizzaer">
+          <div class="item-badge">Populær</div>
+          <div class="item-info">
+            <h3>Hawaii</h3>
+            <p>Tomatsauce, mozzarella, skinke, ananas</p>
+            <div class="item-footer">
+              <span class="price">99 kr</span>
+              <button class="add-btn" onclick="addToCart('Hawaii', 99)">+ Tilføj</button>
+            </div>
+          </div>
+        </div>
 
-  <!-- ═══ CART DRAWER ═══ -->
-  <div class="cart-drawer" id="cartDrawer">
-    <div class="cart-header">
-      <h3>🛒 Your Order</h3>
-      <button class="cart-close" onclick="closeCart()">✕</button>
+        <div class="menu-item" data-cat="pizzaer">
+          <div class="item-info">
+            <h3>Vegetar</h3>
+            <p>Tomatsauce, mozzarella, peberfrugt, løg, champignon, oliven</p>
+            <div class="item-footer">
+              <span class="price">99 kr</span>
+              <button class="add-btn" onclick="addToCart('Vegetar', 99)">+ Tilføj</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="menu-item" data-cat="pizzaer">
+          <div class="item-info">
+            <h3>Kebabpizza</h3>
+            <p>Tomatsauce, mozzarella, dönerkebab, løg, dressing</p>
+            <div class="item-footer">
+              <span class="price">109 kr</span>
+              <button class="add-btn" onclick="addToCart('Kebabpizza', 109)">+ Tilføj</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="menu-item" data-cat="pizzaer">
+          <div class="item-info">
+            <h3>4 Formaggio</h3>
+            <p>Tomatsauce, mozzarella, gorgonzola, parmesan, ricotta</p>
+            <div class="item-footer">
+              <span class="price">109 kr</span>
+              <button class="add-btn" onclick="addToCart('4 Formaggio', 109)">+ Tilføj</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="menu-item" data-cat="pizzaer">
+          <div class="item-info">
+            <h3>Pollo</h3>
+            <p>Tomatsauce, mozzarella, kylling, pesto, soltørrede tomater</p>
+            <div class="item-footer">
+              <span class="price">109 kr</span>
+              <button class="add-btn" onclick="addToCart('Pollo', 109)">+ Tilføj</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- SCANDINAVIAN SPECIAL -->
+        <div class="menu-item" data-cat="special">
+          <div class="item-badge special">Special</div>
+          <div class="item-info">
+            <h3>Scandinavian No. 1</h3>
+            <p>Tomatsauce, mozzarella, laks, rejer, rødløg, kaperser, dild</p>
+            <div class="item-footer">
+              <span class="price">129 kr</span>
+              <button class="add-btn" onclick="addToCart('Scandinavian No. 1', 129)">+ Tilføj</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="menu-item" data-cat="special">
+          <div class="item-badge special">Special</div>
+          <div class="item-info">
+            <h3>Scandinavian No. 2</h3>
+            <p>Creme fraiche, mozzarella, svinekød, kantareller, persille</p>
+            <div class="item-footer">
+              <span class="price">129 kr</span>
+              <button class="add-btn" onclick="addToCart('Scandinavian No. 2', 129)">+ Tilføj</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="menu-item" data-cat="special">
+          <div class="item-badge special">Special</div>
+          <div class="item-info">
+            <h3>Scandinavian No. 3</h3>
+            <p>Tomatsauce, mozzarella, oksekød, karamelliseret løg, rucola, parmesan</p>
+            <div class="item-footer">
+              <span class="price">129 kr</span>
+              <button class="add-btn" onclick="addToCart('Scandinavian No. 3', 129)">+ Tilføj</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- INDBAGTE PIZZAER -->
+        <div class="menu-item" data-cat="indbagt">
+          <div class="item-info">
+            <h3>Indbagt Pepperoni</h3>
+            <p>Tomatsauce, mozzarella, pepperoni – bagt i foldet dej</p>
+            <div class="item-footer">
+              <span class="price">109 kr</span>
+              <button class="add-btn" onclick="addToCart('Indbagt Pepperoni', 109)">+ Tilføj</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="menu-item" data-cat="indbagt">
+          <div class="item-info">
+            <h3>Indbagt Skinke</h3>
+            <p>Tomatsauce, mozzarella, skinke, champignon – bagt i foldet dej</p>
+            <div class="item-footer">
+              <span class="price">109 kr</span>
+              <button class="add-btn" onclick="addToCart('Indbagt Skinke', 109)">+ Tilføj</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="menu-item" data-cat="indbagt">
+          <div class="item-info">
+            <h3>Indbagt Kebab</h3>
+            <p>Tomatsauce, mozzarella, dönerkebab, løg – bagt i foldet dej</p>
+            <div class="item-footer">
+              <span class="price">119 kr</span>
+              <button class="add-btn" onclick="addToCart('Indbagt Kebab', 119)">+ Tilføj</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- PIZZASANDWICHES -->
+        <div class="menu-item" data-cat="sandwich">
+          <div class="item-info">
+            <h3>Pizzasandwich Klassisk</h3>
+            <p>Tomatsauce, mozzarella, skinke, ost, salat, tomat, dressing</p>
+            <div class="item-footer">
+              <span class="price">99 kr</span>
+              <button class="add-btn" onclick="addToCart('Pizzasandwich Klassisk', 99)">+ Tilføj</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="menu-item" data-cat="sandwich">
+          <div class="item-info">
+            <h3>Pizzasandwich Kebab</h3>
+            <p>Tomatsauce, mozzarella, dönerkebab, løg, salatmix, dressing</p>
+            <div class="item-footer">
+              <span class="price">99 kr</span>
+              <button class="add-btn" onclick="addToCart('Pizzasandwich Kebab', 99)">+ Tilføj</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- DURUM -->
+        <div class="menu-item" data-cat="durum">
+          <div class="item-badge">Populær</div>
+          <div class="item-info">
+            <h3>Durum Kylling</h3>
+            <p>Kylling, salatmix, tomat, agurk, rødløg, creme fraiche dressing</p>
+            <div class="item-footer">
+              <span class="price">89 kr</span>
+              <button class="add-btn" onclick="addToCart('Durum Kylling', 89)">+ Tilføj</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="menu-item" data-cat="durum">
+          <div class="item-info">
+            <h3>Durum Kebab</h3>
+            <p>Dönerkebab, salatmix, tomat, agurk, rødløg, sennepsdressing</p>
+            <div class="item-footer">
+              <span class="price">89 kr</span>
+              <button class="add-btn" onclick="addToCart('Durum Kebab', 89)">+ Tilføj</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="menu-item" data-cat="durum">
+          <div class="item-info">
+            <h3>Durum Combo</h3>
+            <p>Valgfri durum + sodavand (33cl)</p>
+            <div class="item-footer">
+              <span class="price">134 kr</span>
+              <button class="add-btn" onclick="addToCart('Durum Combo', 134)">+ Tilføj</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- À LA CARTE -->
+        <div class="menu-item" data-cat="alacarte">
+          <div class="item-info">
+            <h3>Hvidløgsbrød</h3>
+            <p>Sprødt brød med hvidløgssmør og friske urter</p>
+            <div class="item-footer">
+              <span class="price">39 kr</span>
+              <button class="add-btn" onclick="addToCart('Hvidløgsbrød', 39)">+ Tilføj</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="menu-item" data-cat="alacarte">
+          <div class="item-info">
+            <h3>Pommes Frites</h3>
+            <p>Sprøde pommes frites med ketchup og mayo</p>
+            <div class="item-footer">
+              <span class="price">39 kr</span>
+              <button class="add-btn" onclick="addToCart('Pommes Frites', 39)">+ Tilføj</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="menu-item" data-cat="alacarte">
+          <div class="item-info">
+            <h3>Salat</h3>
+            <p>Blandet salat med tomat, agurk, rødløg og vinaigrette</p>
+            <div class="item-footer">
+              <span class="price">49 kr</span>
+              <button class="add-btn" onclick="addToCart('Salat', 49)">+ Tilføj</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- DRINKS -->
+        <div class="menu-item" data-cat="drinks">
+          <div class="item-info">
+            <h3>Coca-Cola 33cl</h3>
+            <p>Klassisk Coca-Cola på dåse</p>
+            <div class="item-footer">
+              <span class="price">25 kr</span>
+              <button class="add-btn" onclick="addToCart('Coca-Cola 33cl', 25)">+ Tilføj</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="menu-item" data-cat="drinks">
+          <div class="item-info">
+            <h3>Sprite / Fanta 33cl</h3>
+            <p>Sprite eller Fanta på dåse</p>
+            <div class="item-footer">
+              <span class="price">25 kr</span>
+              <button class="add-btn" onclick="addToCart('Sprite / Fanta 33cl', 25)">+ Tilføj</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="menu-item" data-cat="drinks">
+          <div class="item-info">
+            <h3>Tuborg 33cl</h3>
+            <p>Tuborg Classic fadøl på dåse</p>
+            <div class="item-footer">
+              <span class="price">30 kr</span>
+              <button class="add-btn" onclick="addToCart('Tuborg 33cl', 30)">+ Tilføj</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="menu-item" data-cat="drinks">
+          <div class="item-info">
+            <h3>Vand 50cl</h3>
+            <p>Kildevand på flaske</p>
+            <div class="item-footer">
+              <span class="price">20 kr</span>
+              <button class="add-btn" onclick="addToCart('Vand 50cl', 20)">+ Tilføj</button>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /menu-grid -->
     </div>
-    <div class="cart-items" id="cartItems">
-      <div class="cart-empty">
-        <div class="cart-empty-icon">🌯</div>
-        <p>Your cart is empty.<br>Add some items from the menu!</p>
-      </div>
-    </div>
-    <div class="cart-footer" id="cartFooter" style="display:none;">
-      <div class="cart-subtotal"><span>Subtotal</span><span id="cartSubtotal">£0.00</span></div>
-      <div class="cart-subtotal"><span>Delivery Fee</span><span>£1.50</span></div>
-      <div class="cart-total"><span>Total</span><span id="cartTotal">£0.00</span></div>
-      <button class="checkout-btn" onclick="goToCheckout()">Proceed to Checkout →</button>
+  </main>
+
+  <!-- CART BAR -->
+  <div class="cart-bar" id="cartBar">
+    <div class="cart-bar-inner">
+      <span class="cart-count" id="cartCount">0 varer</span>
+      <a class="cart-btn" href="checkout.html">
+        Gå til kassen · <strong id="cartTotal">0 kr</strong> →
+      </a>
     </div>
   </div>
 
-  <!-- ═══ TOAST ═══ -->
-  <div class="toast" id="toast"></div>
+  <!-- ABOUT -->
+  <section id="about" class="about-section">
+    <div class="container about-grid">
+      <div class="about-text">
+        <p class="section-label">Om Os</p>
+        <h2>Brændende Kærlighed<br/>til Pizza</h2>
+        <p>Hos Scandinavian Stenovns Pizza i Horsens har vi en brændende kærlighed for at bage og lave pizzaer. Vi har et bredt udvalg af forskellig pizzaer, der alle er inspireret fra det fantastiske Italien.</p>
+        <p>Vi har selv udviklet vores dej, som giver den helt luftige pizzabund med sprød kant. Alle vores pizzaer er bagt i vores ægte italienske stenovn.</p>
+        <div class="about-stats">
+          <div class="stat"><span>🔥</span><strong>Stenovn</strong><small>Ægte italiensk</small></div>
+          <div class="stat"><span>🌿</span><strong>Friske råvarer</strong><small>Lokale & importerede</small></div>
+          <div class="stat"><span>🤌</span><strong>Håndlavet dej</strong><small>Vores egen opskrift</small></div>
+        </div>
+      </div>
+      <div class="about-visual">
+        <div class="about-card">
+          <div class="about-emoji">🍕</div>
+          <h3>Scandinavian Stenovns Pizza</h3>
+          <p>Bjerrevej 73, 8700 Horsens</p>
+          <p>📞 +45 71 74 70 74</p>
+          <div class="hours">
+            <p><strong>Åbningstider:</strong></p>
+            <p>Man: 16:00–22:00</p>
+            <p>Tir: Lukket</p>
+            <p>Ons–Tor: 16:00–22:00</p>
+            <p>Fre–Lør: 16:00–02:00</p>
+            <p>Søn: 16:00–22:00</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact" class="contact-section">
+    <div class="container">
+      <h2>Find Os</h2>
+      <p>Bjerrevej 73, 8700 Horsens · +45 71 74 70 74</p>
+      <div class="map-placeholder">
+        <div class="map-inner">
+          <span>📍 Bjerrevej 73, 8700 Horsens</span>
+          <a class="map-link" href="https://maps.google.com/?q=55.8461309,9.8467321" target="_blank">Åbn i Google Maps →</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="container footer-inner">
+      <div class="footer-brand">
+        <span>🍕 Scandinavian Stenovns Pizza</span>
+        <small>Bjerrevej 73, 8700 Horsens</small>
+      </div>
+      <div class="footer-links">
+        <a href="login.html">Log ind</a>
+        <a href="register.html">Opret konto</a>
+        <a href="checkout.html">Bestil</a>
+      </div>
+      <small class="footer-copy">© 2025 Scandinavian Stenovns Pizza. Alle rettigheder forbeholdes.</small>
+    </div>
+  </footer>
 
   <script>
-    // ── Cart state ──
-    let cart = [];
+    // Cart
+    let cart = JSON.parse(localStorage.getItem('sp_cart') || '[]');
+    updateCartBar();
 
     function addToCart(name, price) {
       const existing = cart.find(i => i.name === name);
-      if (existing) {
-        existing.qty++;
-      } else {
-        cart.push({ name, price, qty: 1 });
-      }
-      updateCartUI();
-      showToast(`${name} added!`);
+      if (existing) existing.qty++;
+      else cart.push({ name, price, qty: 1 });
+      localStorage.setItem('sp_cart', JSON.stringify(cart));
+      updateCartBar();
+      showToast(name);
     }
 
-    function removeFromCart(name) {
-      const existing = cart.find(i => i.name === name);
-      if (!existing) return;
-      if (existing.qty > 1) {
-        existing.qty--;
-      } else {
-        cart = cart.filter(i => i.name !== name);
-      }
-      updateCartUI();
+    function updateCartBar() {
+      const total = cart.reduce((s, i) => s + i.price * i.qty, 0);
+      const count = cart.reduce((s, i) => s + i.qty, 0);
+      document.getElementById('cartCount').textContent = count + ' varer';
+      document.getElementById('cartTotal').textContent = total + ' kr';
+      const bar = document.getElementById('cartBar');
+      bar.classList.toggle('visible', count > 0);
     }
 
-    function updateCartUI() {
-      const totalItems = cart.reduce((sum, i) => sum + i.qty, 0);
-      const subtotal   = cart.reduce((sum, i) => sum + i.price * i.qty, 0);
-      const total      = subtotal + 1.50;
-
-      // Update FAB
-      const fab = document.getElementById('cartFab');
-      document.getElementById('cartCount').textContent = totalItems;
-      fab.classList.toggle('visible', totalItems > 0);
-
-      // Update totals
-      document.getElementById('cartSubtotal').textContent = `£${subtotal.toFixed(2)}`;
-      document.getElementById('cartTotal').textContent     = `£${total.toFixed(2)}`;
-      document.getElementById('cartFooter').style.display  = cart.length > 0 ? 'block' : 'none';
-
-      // Render cart items
-      const container = document.getElementById('cartItems');
-      if (cart.length === 0) {
-        container.innerHTML = `<div class="cart-empty"><div class="cart-empty-icon">🌯</div><p>Your cart is empty.<br>Add some items from the menu!</p></div>`;
-      } else {
-        container.innerHTML = cart.map(item => `
-          <div class="cart-item">
-            <div class="cart-item-info">
-              <div class="cart-item-name">${item.name}</div>
-              <div class="cart-item-price">£${(item.price * item.qty).toFixed(2)}</div>
-            </div>
-            <div class="cart-item-qty">
-              <button class="qty-btn" onclick="removeFromCart('${item.name.replace(/'/g,"\\'")}')">−</button>
-              <span class="qty-num">${item.qty}</span>
-              <button class="qty-btn" onclick="addToCart('${item.name.replace(/'/g,"\\'")}', ${item.price})">+</button>
-            </div>
-          </div>
-        `).join('');
-      }
+    function showToast(name) {
+      const t = document.createElement('div');
+      t.className = 'toast';
+      t.textContent = '✓ ' + name + ' tilføjet';
+      document.body.appendChild(t);
+      setTimeout(() => t.classList.add('show'), 10);
+      setTimeout(() => { t.classList.remove('show'); setTimeout(() => t.remove(), 300); }, 2000);
     }
 
-    function openCart()  {
-      document.getElementById('cartDrawer').classList.add('open');
-      document.getElementById('cartOverlay').classList.add('open');
-    }
-    function closeCart() {
-      document.getElementById('cartDrawer').classList.remove('open');
-      document.getElementById('cartOverlay').classList.remove('open');
-    }
+    // Category filter
+    document.querySelectorAll('.cat-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        const cat = btn.dataset.cat;
+        document.querySelectorAll('.menu-item').forEach(item => {
+          item.style.display = (cat === 'all' || item.dataset.cat === cat) ? '' : 'none';
+        });
+      });
+    });
 
-    function goToCheckout() {
-      if (cart.length === 0) return;
-      // Save cart to sessionStorage so checkout.html can read it
-      sessionStorage.setItem('cart', JSON.stringify(cart));
-      window.location.href = 'checkout.html';
-    }
+    // Burger menu
+    const burger = document.getElementById('burger');
+    const mobileMenu = document.getElementById('mobileMenu');
+    burger.addEventListener('click', () => {
+      burger.classList.toggle('open');
+      mobileMenu.classList.toggle('open');
+    });
+    mobileMenu.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
+      burger.classList.remove('open');
+      mobileMenu.classList.remove('open');
+    }));
 
-    function showToast(msg) {
-      const t = document.getElementById('toast');
-      t.textContent = '✅ ' + msg;
-      t.classList.add('show');
-      setTimeout(() => t.classList.remove('show'), 2000);
-    }
-
-    // Nav helpers
-    function toggleMenu() {
-      document.getElementById('navLinks').classList.toggle('open');
-    }
-    window.addEventListener('scroll', () => {
-      document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 60);
+    // Smooth scroll
+    document.querySelectorAll('a[href^="#"]').forEach(a => {
+      a.addEventListener('click', e => {
+        e.preventDefault();
+        document.querySelector(a.getAttribute('href'))?.scrollIntoView({ behavior: 'smooth' });
+      });
     });
   </script>
 </body>
