@@ -254,15 +254,23 @@
     document.getElementById('dmConfirmBtns').classList.remove('show');
 
     try {
-      const res = await fetch('/api/distance', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ address: input })
-      });
-      const data = await res.json();
+      let res, data;
+      try {
+        res = await fetch('/api/distance', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ address: input })
+        });
+        const rawText = await res.text();
+        console.log('API response (' + res.status + '):', rawText);
+        try { data = JSON.parse(rawText); }
+        catch(e) { throw new Error('Server svarede ikke korrekt: ' + rawText.substring(0, 120)); }
+      } catch(fetchErr) {
+        throw fetchErr;
+      }
 
       if (!res.ok) {
-        showError(data.error || 'Noget gik galt. Prøv igen.');
+        showError(data.error || 'Server fejl (' + res.status + '). Se konsollen for detaljer.');
         return;
       }
 
@@ -284,8 +292,8 @@
       document.getElementById('dmConfirmBtns').classList.add('show');
 
     } catch(err) {
-      showError('Netværksfejl. Tjek din forbindelse og prøv igen.');
-      console.error(err);
+      showError('Fejl: ' + (err.message || 'Ukendt fejl. Tjek konsollen.'));
+      console.error('Distance fetch error:', err);
     } finally {
       btn.textContent = 'Søg';
       btn.disabled = false;
