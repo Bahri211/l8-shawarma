@@ -6,10 +6,145 @@
   <title>L8 Shawarma – Fresh Authentic Shawarma on Lodge Lane</title>
   <link rel="stylesheet" href="style.css" />
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Cairo:wght@400;600;700&display=swap" rel="stylesheet"/>
+  <style>
+    /* ── ADD BUTTON ── */
+    .menu-item { position: relative; }
+    .add-btn {
+      background: var(--fire); color: #fff; border: none;
+      width: 32px; height: 32px; border-radius: 50%;
+      font-size: 1.3rem; line-height: 1; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; transition: all 0.2s;
+      box-shadow: 0 3px 10px rgba(232,66,10,0.3);
+    }
+    .add-btn:hover { background: #c73309; transform: scale(1.1); }
+
+    .item-right { display: flex; align-items: center; gap: 12px; flex-shrink: 0; }
+
+    /* ── FLOATING CART BUTTON ── */
+    .cart-fab {
+      position: fixed; bottom: 28px; right: 28px; z-index: 500;
+      background: var(--fire); color: #fff;
+      border: none; border-radius: 50px;
+      padding: 14px 24px;
+      font-family: 'Cairo', sans-serif; font-weight: 700; font-size: 1rem;
+      cursor: pointer; display: none; align-items: center; gap: 10px;
+      box-shadow: 0 8px 30px rgba(232,66,10,0.5);
+      transition: all 0.3s; animation: slideUp 0.3s ease both;
+    }
+    .cart-fab.visible { display: flex; }
+    .cart-fab:hover { background: #c73309; transform: translateY(-3px); }
+    .cart-fab-count {
+      background: #fff; color: var(--fire);
+      width: 24px; height: 24px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.85rem; font-weight: 700;
+    }
+
+    /* ── CART DRAWER ── */
+    .cart-overlay {
+      position: fixed; inset: 0; z-index: 800;
+      background: rgba(0,0,0,0.5); display: none;
+    }
+    .cart-overlay.open { display: block; }
+
+    .cart-drawer {
+      position: fixed; right: 0; top: 0; bottom: 0; z-index: 900;
+      width: 380px; max-width: 95vw;
+      background: #fff; display: flex; flex-direction: column;
+      transform: translateX(100%); transition: transform 0.3s ease;
+      box-shadow: -8px 0 40px rgba(0,0,0,0.2);
+    }
+    .cart-drawer.open { transform: translateX(0); }
+
+    .cart-header {
+      padding: 24px; border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between;
+      background: var(--dark);
+    }
+    .cart-header h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.4rem; color: #fff;
+    }
+    .cart-close {
+      background: rgba(255,255,255,0.1); border: none;
+      color: #fff; width: 36px; height: 36px; border-radius: 50%;
+      font-size: 1.2rem; cursor: pointer; transition: background 0.2s;
+    }
+    .cart-close:hover { background: rgba(255,255,255,0.2); }
+
+    .cart-items {
+      flex: 1; overflow-y: auto; padding: 20px;
+    }
+
+    .cart-empty {
+      text-align: center; padding: 60px 20px; color: var(--light-text);
+    }
+    .cart-empty-icon { font-size: 3rem; margin-bottom: 12px; }
+    .cart-empty p { font-size: 1rem; }
+
+    .cart-item {
+      display: flex; align-items: center; gap: 12px;
+      padding: 14px 0; border-bottom: 1px solid var(--border);
+    }
+    .cart-item-info { flex: 1; }
+    .cart-item-name { font-weight: 700; font-size: 0.95rem; color: var(--dark); }
+    .cart-item-price { font-size: 0.88rem; color: var(--fire); font-weight: 700; }
+
+    .cart-item-qty {
+      display: flex; align-items: center; gap: 8px;
+    }
+    .qty-btn {
+      width: 28px; height: 28px; border-radius: 50%;
+      border: 1.5px solid var(--border); background: var(--cream);
+      font-size: 1rem; cursor: pointer; display: flex;
+      align-items: center; justify-content: center;
+      transition: all 0.15s; font-weight: 700; color: var(--text);
+    }
+    .qty-btn:hover { border-color: var(--fire); color: var(--fire); }
+    .qty-num { font-weight: 700; font-size: 0.95rem; min-width: 20px; text-align: center; }
+
+    .cart-footer {
+      padding: 20px; border-top: 2px solid var(--border);
+      background: var(--cream);
+    }
+    .cart-subtotal {
+      display: flex; justify-content: space-between;
+      font-size: 0.95rem; color: var(--light-text); margin-bottom: 8px;
+    }
+    .cart-total {
+      display: flex; justify-content: space-between;
+      font-weight: 700; font-size: 1.1rem; color: var(--dark);
+      margin-bottom: 16px; padding-top: 8px;
+      border-top: 1px solid var(--border);
+    }
+    .checkout-btn {
+      display: block; width: 100%; padding: 16px;
+      background: var(--fire); color: #fff; border: none;
+      border-radius: 50px; font-family: 'Cairo', sans-serif;
+      font-weight: 700; font-size: 1.05rem; cursor: pointer;
+      text-align: center; text-decoration: none;
+      transition: all 0.2s;
+    }
+    .checkout-btn:hover { background: #c73309; transform: translateY(-1px); }
+
+    /* ── ITEM ADDED TOAST ── */
+    .toast {
+      position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%);
+      background: var(--dark); color: #fff;
+      padding: 12px 24px; border-radius: 50px;
+      font-family: 'Cairo', sans-serif; font-weight: 600; font-size: 0.9rem;
+      z-index: 1000; opacity: 0; transition: opacity 0.3s;
+      pointer-events: none; white-space: nowrap;
+    }
+    .toast.show { opacity: 1; }
+
+    @keyframes slideUp { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
+  </style>
 </head>
 <body>
 
-  <!-- ═══════════════════════════ NAV ═══════════════════════════ -->
+  <!-- ═══ NAV ═══ -->
   <nav id="navbar">
     <div class="nav-logo">L8 <span>Shawarma</span></div>
     <ul class="nav-links" id="navLinks">
@@ -19,13 +154,13 @@
       <li><a href="#contact">Contact</a></li>
       <li><a href="login.html">Login</a></li>
     </ul>
-    <a href="#order" class="nav-order-btn">Order Now</a>
+    <a href="#menu" class="nav-order-btn" onclick="document.getElementById('menu').scrollIntoView({behavior:'smooth'}); return false;">Order Now</a>
     <div class="hamburger" id="hamburger" onclick="toggleMenu()">
       <span></span><span></span><span></span>
     </div>
   </nav>
 
-  <!-- ═══════════════════════════ HERO ═══════════════════════════ -->
+  <!-- ═══ HERO ═══ -->
   <section id="home" class="hero">
     <div class="hero-overlay"></div>
     <div class="hero-content">
@@ -33,7 +168,7 @@
       <h1 class="hero-title">Fresh. Authentic.<br><span>Shawarma.</span></h1>
       <p class="hero-subtitle">Freshly carved meat, bold spices, and real flavour — right in the heart of L8, Liverpool.</p>
       <div class="hero-btns">
-        <a href="#order" class="btn btn-fire">🔥 Order Now</a>
+        <a href="#menu" class="btn btn-fire" onclick="document.getElementById('menu').scrollIntoView({behavior:'smooth'}); return false;">🔥 Order Now</a>
         <a href="#menu" class="btn btn-outline">View Menu</a>
       </div>
       <a href="tel:+441234567890" class="call-btn">📞 Call to Order</a>
@@ -41,12 +176,12 @@
     <div class="hero-scroll-hint">↓ Scroll Down</div>
   </section>
 
-  <!-- ═══════════════════════════ MENU ═══════════════════════════ -->
+  <!-- ═══ MENU ═══ -->
   <section id="menu" class="section menu-section">
     <div class="section-header">
       <p class="section-tag">What We Serve</p>
       <h2 class="section-title">Our Menu</h2>
-      <p class="section-sub">Everything made fresh, every day. No shortcuts.</p>
+      <p class="section-sub">Tap + to add items to your cart, then checkout when ready.</p>
     </div>
 
     <!-- Wraps -->
@@ -58,28 +193,40 @@
             <span class="item-name">Chicken Shawarma Wrap</span>
             <span class="item-desc">Grilled chicken, garlic sauce, pickles, fresh veg</span>
           </div>
-          <span class="item-price">£5.99</span>
+          <div class="item-right">
+            <span class="item-price">£5.99</span>
+            <button class="add-btn" onclick="addToCart('Chicken Shawarma Wrap', 5.99)">+</button>
+          </div>
         </div>
         <div class="menu-item">
           <div class="item-info">
             <span class="item-name">Lamb Shawarma Wrap</span>
             <span class="item-desc">Slow-carved lamb, tahini, sumac onions, parsley</span>
           </div>
-          <span class="item-price">£6.99</span>
+          <div class="item-right">
+            <span class="item-price">£6.99</span>
+            <button class="add-btn" onclick="addToCart('Lamb Shawarma Wrap', 6.99)">+</button>
+          </div>
         </div>
         <div class="menu-item">
           <div class="item-info">
             <span class="item-name">Mixed Shawarma Wrap</span>
-            <span class="item-desc">Chicken & lamb combo with all the sauces</span>
+            <span class="item-desc">Chicken &amp; lamb combo with all the sauces</span>
           </div>
-          <span class="item-price">£7.49</span>
+          <div class="item-right">
+            <span class="item-price">£7.49</span>
+            <button class="add-btn" onclick="addToCart('Mixed Shawarma Wrap', 7.49)">+</button>
+          </div>
         </div>
         <div class="menu-item popular">
           <div class="item-info">
             <span class="item-name">Spicy Chicken Wrap <span class="badge">🔥 Popular</span></span>
             <span class="item-desc">Fiery marinated chicken, chilli sauce, jalapeños</span>
           </div>
-          <span class="item-price">£6.49</span>
+          <div class="item-right">
+            <span class="item-price">£6.49</span>
+            <button class="add-btn" onclick="addToCart('Spicy Chicken Wrap', 6.49)">+</button>
+          </div>
         </div>
       </div>
     </div>
@@ -93,21 +240,30 @@
             <span class="item-name">Chicken Platter</span>
             <span class="item-desc">Rice, salad, garlic sauce, pita bread</span>
           </div>
-          <span class="item-price">£9.99</span>
+          <div class="item-right">
+            <span class="item-price">£9.99</span>
+            <button class="add-btn" onclick="addToCart('Chicken Platter', 9.99)">+</button>
+          </div>
         </div>
         <div class="menu-item popular">
           <div class="item-info">
             <span class="item-name">Family Sharing Platter <span class="badge">⭐ Best Value</span></span>
-            <span class="item-desc">Serves 3–4: mixed meats, rice, salads, sauces & bread</span>
+            <span class="item-desc">Serves 3–4: mixed meats, rice, salads, sauces &amp; bread</span>
           </div>
-          <span class="item-price">£24.99</span>
+          <div class="item-right">
+            <span class="item-price">£24.99</span>
+            <button class="add-btn" onclick="addToCart('Family Sharing Platter', 24.99)">+</button>
+          </div>
         </div>
         <div class="menu-item">
           <div class="item-info">
             <span class="item-name">Lamb Platter</span>
             <span class="item-desc">Tender lamb, saffron rice, tzatziki, salad</span>
           </div>
-          <span class="item-price">£11.99</span>
+          <div class="item-right">
+            <span class="item-price">£11.99</span>
+            <button class="add-btn" onclick="addToCart('Lamb Platter', 11.99)">+</button>
+          </div>
         </div>
       </div>
     </div>
@@ -121,21 +277,30 @@
             <span class="item-name">Falafel Wrap</span>
             <span class="item-desc">Crispy falafel, hummus, tomato, cucumber, tahini</span>
           </div>
-          <span class="item-price">£4.99</span>
+          <div class="item-right">
+            <span class="item-price">£4.99</span>
+            <button class="add-btn" onclick="addToCart('Falafel Wrap', 4.99)">+</button>
+          </div>
         </div>
         <div class="menu-item">
           <div class="item-info">
             <span class="item-name">Veggie Platter</span>
-            <span class="item-desc">Falafel, hummus, salad, pita & dips</span>
+            <span class="item-desc">Falafel, hummus, salad, pita &amp; dips</span>
           </div>
-          <span class="item-price">£8.49</span>
+          <div class="item-right">
+            <span class="item-price">£8.49</span>
+            <button class="add-btn" onclick="addToCart('Veggie Platter', 8.49)">+</button>
+          </div>
         </div>
         <div class="menu-item">
           <div class="item-info">
-            <span class="item-name">Hummus & Pita</span>
+            <span class="item-name">Hummus &amp; Pita</span>
             <span class="item-desc">House-made hummus with warm pita bread</span>
           </div>
-          <span class="item-price">£3.49</span>
+          <div class="item-right">
+            <span class="item-price">£3.49</span>
+            <button class="add-btn" onclick="addToCart('Hummus & Pita', 3.49)">+</button>
+          </div>
         </div>
       </div>
     </div>
@@ -146,19 +311,19 @@
       <div class="menu-grid">
         <div class="menu-item">
           <div class="item-info"><span class="item-name">Chips</span><span class="item-desc">Crispy golden fries</span></div>
-          <span class="item-price">£2.49</span>
+          <div class="item-right"><span class="item-price">£2.49</span><button class="add-btn" onclick="addToCart('Chips', 2.49)">+</button></div>
         </div>
         <div class="menu-item">
           <div class="item-info"><span class="item-name">Seasoned Fries</span><span class="item-desc">Fries with our house spice blend</span></div>
-          <span class="item-price">£2.99</span>
+          <div class="item-right"><span class="item-price">£2.99</span><button class="add-btn" onclick="addToCart('Seasoned Fries', 2.99)">+</button></div>
         </div>
         <div class="menu-item">
           <div class="item-info"><span class="item-name">Garlic Bread</span><span class="item-desc">Toasted pita with garlic butter</span></div>
-          <span class="item-price">£1.99</span>
+          <div class="item-right"><span class="item-price">£1.99</span><button class="add-btn" onclick="addToCart('Garlic Bread', 1.99)">+</button></div>
         </div>
         <div class="menu-item">
           <div class="item-info"><span class="item-name">Side Salad</span><span class="item-desc">Fresh mixed salad with lemon dressing</span></div>
-          <span class="item-price">£2.49</span>
+          <div class="item-right"><span class="item-price">£2.49</span><button class="add-btn" onclick="addToCart('Side Salad', 2.49)">+</button></div>
         </div>
       </div>
     </div>
@@ -169,39 +334,25 @@
       <div class="menu-grid">
         <div class="menu-item">
           <div class="item-info"><span class="item-name">Soft Drinks (Can)</span><span class="item-desc">Coke, Pepsi, Fanta, 7Up</span></div>
-          <span class="item-price">£1.00</span>
+          <div class="item-right"><span class="item-price">£1.00</span><button class="add-btn" onclick="addToCart('Soft Drink (Can)', 1.00)">+</button></div>
         </div>
         <div class="menu-item">
           <div class="item-info"><span class="item-name">Still Water</span></div>
-          <span class="item-price">£0.80</span>
+          <div class="item-right"><span class="item-price">£0.80</span><button class="add-btn" onclick="addToCart('Still Water', 0.80)">+</button></div>
         </div>
         <div class="menu-item">
           <div class="item-info"><span class="item-name">Fresh Mango Juice</span><span class="item-desc">100% natural</span></div>
-          <span class="item-price">£2.49</span>
+          <div class="item-right"><span class="item-price">£2.49</span><button class="add-btn" onclick="addToCart('Fresh Mango Juice', 2.49)">+</button></div>
         </div>
         <div class="menu-item">
           <div class="item-info"><span class="item-name">Ayran (Yoghurt Drink)</span><span class="item-desc">Chilled, salted yoghurt drink</span></div>
-          <span class="item-price">£1.99</span>
+          <div class="item-right"><span class="item-price">£1.99</span><button class="add-btn" onclick="addToCart('Ayran Yoghurt Drink', 1.99)">+</button></div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- ═══════════════════════════ ORDER SECTION ═══════════════════════════ -->
-  <section id="order" class="section order-section">
-    <div class="order-inner">
-      <p class="section-tag" style="color:var(--gold)">Ready to Eat?</p>
-      <h2 class="section-title" style="color:#fff">Place Your Order</h2>
-      <p class="section-sub" style="color:#ccc">Order directly with us or via your favourite delivery app.</p>
-      <div class="order-btns">
-        <a href="checkout.html" class="btn btn-fire big-btn">🛒 Order &amp; Pay Online</a>
-        <a href="https://www.ubereats.com" target="_blank" class="btn btn-outline-light big-btn">UberEats</a>
-        <a href="https://www.deliveroo.co.uk" target="_blank" class="btn btn-outline-light big-btn">Deliveroo</a>
-      </div>
-    </div>
-  </section>
-
-  <!-- ═══════════════════════════ ABOUT ═══════════════════════════ -->
+  <!-- ═══ ABOUT ═══ -->
   <section id="about" class="section about-section">
     <div class="about-inner">
       <div class="about-text">
@@ -221,7 +372,7 @@
     </div>
   </section>
 
-  <!-- ═══════════════════════════ CONTACT ═══════════════════════════ -->
+  <!-- ═══ CONTACT ═══ -->
   <section id="contact" class="section contact-section">
     <div class="section-header">
       <p class="section-tag">Find Us</p>
@@ -231,24 +382,15 @@
       <div class="contact-info">
         <div class="info-block">
           <span class="info-icon">📍</span>
-          <div>
-            <strong>Address</strong>
-            <p>41 Lodge Lane, Liverpool L8 0QT<br>United Kingdom</p>
-          </div>
+          <div><strong>Address</strong><p>41 Lodge Lane, Liverpool L8 0QT<br>United Kingdom</p></div>
         </div>
         <div class="info-block">
           <span class="info-icon">📞</span>
-          <div>
-            <strong>Phone</strong>
-            <p><a href="tel:+441234567890">0XX XXXX XXXX</a><br><small>(Contact owner for exact number)</small></p>
-          </div>
+          <div><strong>Phone</strong><p><a href="tel:+441234567890">0XX XXXX XXXX</a><br><small>(Contact owner for exact number)</small></p></div>
         </div>
         <div class="info-block">
           <span class="info-icon">✉️</span>
-          <div>
-            <strong>Email</strong>
-            <p><a href="mailto:hello@l8shawarma.co.uk">hello@l8shawarma.co.uk</a></p>
-          </div>
+          <div><strong>Email</strong><p><a href="mailto:hello@l8shawarma.co.uk">hello@l8shawarma.co.uk</a></p></div>
         </div>
         <div class="info-block">
           <span class="info-icon">🕐</span>
@@ -265,16 +407,13 @@
         <a href="tel:+441234567890" class="btn btn-outline mobile-call-btn">📞 Call to Order</a>
       </div>
       <div class="map-wrapper">
-        <iframe
-          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2374.2!2d-2.955!3d53.393!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x487b213f7e5ed22d%3A0x0!2s41+Lodge+Ln%2C+Liverpool+L8+0QT!5e0!3m2!1sen!2suk!4v1700000000000"
-          width="100%" height="400" style="border:0;" allowfullscreen="" loading="lazy"
-          referrerpolicy="no-referrer-when-downgrade">
-        </iframe>
+        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2374.2!2d-2.955!3d53.393!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x487b213f7e5ed22d%3A0x0!2s41+Lodge+Ln%2C+Liverpool+L8+0QT!5e0!3m2!1sen!2suk!4v1700000000000"
+          width="100%" height="400" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
       </div>
     </div>
   </section>
 
-  <!-- ═══════════════════════════ FOOTER ═══════════════════════════ -->
+  <!-- ═══ FOOTER ═══ -->
   <footer class="footer">
     <div class="footer-inner">
       <div class="footer-logo">L8 <span>Shawarma</span></div>
@@ -284,18 +423,132 @@
         <a href="https://www.tiktok.com/@l8shawarma" target="_blank" class="social-link">🎵 TikTok</a>
         <a href="https://www.facebook.com/l8shawarma" target="_blank" class="social-link">👍 Facebook</a>
       </div>
-      <p class="footer-copy">© 2025 L8 Shawarma. All rights reserved. | Website designed by <strong>Your Name / Company</strong></p>
+      <p class="footer-copy">© 2025 L8 Shawarma. All rights reserved.</p>
     </div>
   </footer>
 
+  <!-- ═══ FLOATING CART BUTTON ═══ -->
+  <button class="cart-fab" id="cartFab" onclick="openCart()">
+    🛒 View Cart <span class="cart-fab-count" id="cartCount">0</span>
+  </button>
+
+  <!-- ═══ CART OVERLAY ═══ -->
+  <div class="cart-overlay" id="cartOverlay" onclick="closeCart()"></div>
+
+  <!-- ═══ CART DRAWER ═══ -->
+  <div class="cart-drawer" id="cartDrawer">
+    <div class="cart-header">
+      <h3>🛒 Your Order</h3>
+      <button class="cart-close" onclick="closeCart()">✕</button>
+    </div>
+    <div class="cart-items" id="cartItems">
+      <div class="cart-empty">
+        <div class="cart-empty-icon">🌯</div>
+        <p>Your cart is empty.<br>Add some items from the menu!</p>
+      </div>
+    </div>
+    <div class="cart-footer" id="cartFooter" style="display:none;">
+      <div class="cart-subtotal"><span>Subtotal</span><span id="cartSubtotal">£0.00</span></div>
+      <div class="cart-subtotal"><span>Delivery Fee</span><span>£1.50</span></div>
+      <div class="cart-total"><span>Total</span><span id="cartTotal">£0.00</span></div>
+      <button class="checkout-btn" onclick="goToCheckout()">Proceed to Checkout →</button>
+    </div>
+  </div>
+
+  <!-- ═══ TOAST ═══ -->
+  <div class="toast" id="toast"></div>
+
   <script>
+    // ── Cart state ──
+    let cart = [];
+
+    function addToCart(name, price) {
+      const existing = cart.find(i => i.name === name);
+      if (existing) {
+        existing.qty++;
+      } else {
+        cart.push({ name, price, qty: 1 });
+      }
+      updateCartUI();
+      showToast(`${name} added!`);
+    }
+
+    function removeFromCart(name) {
+      const existing = cart.find(i => i.name === name);
+      if (!existing) return;
+      if (existing.qty > 1) {
+        existing.qty--;
+      } else {
+        cart = cart.filter(i => i.name !== name);
+      }
+      updateCartUI();
+    }
+
+    function updateCartUI() {
+      const totalItems = cart.reduce((sum, i) => sum + i.qty, 0);
+      const subtotal   = cart.reduce((sum, i) => sum + i.price * i.qty, 0);
+      const total      = subtotal + 1.50;
+
+      // Update FAB
+      const fab = document.getElementById('cartFab');
+      document.getElementById('cartCount').textContent = totalItems;
+      fab.classList.toggle('visible', totalItems > 0);
+
+      // Update totals
+      document.getElementById('cartSubtotal').textContent = `£${subtotal.toFixed(2)}`;
+      document.getElementById('cartTotal').textContent     = `£${total.toFixed(2)}`;
+      document.getElementById('cartFooter').style.display  = cart.length > 0 ? 'block' : 'none';
+
+      // Render cart items
+      const container = document.getElementById('cartItems');
+      if (cart.length === 0) {
+        container.innerHTML = `<div class="cart-empty"><div class="cart-empty-icon">🌯</div><p>Your cart is empty.<br>Add some items from the menu!</p></div>`;
+      } else {
+        container.innerHTML = cart.map(item => `
+          <div class="cart-item">
+            <div class="cart-item-info">
+              <div class="cart-item-name">${item.name}</div>
+              <div class="cart-item-price">£${(item.price * item.qty).toFixed(2)}</div>
+            </div>
+            <div class="cart-item-qty">
+              <button class="qty-btn" onclick="removeFromCart('${item.name.replace(/'/g,"\\'")}')">−</button>
+              <span class="qty-num">${item.qty}</span>
+              <button class="qty-btn" onclick="addToCart('${item.name.replace(/'/g,"\\'")}', ${item.price})">+</button>
+            </div>
+          </div>
+        `).join('');
+      }
+    }
+
+    function openCart()  {
+      document.getElementById('cartDrawer').classList.add('open');
+      document.getElementById('cartOverlay').classList.add('open');
+    }
+    function closeCart() {
+      document.getElementById('cartDrawer').classList.remove('open');
+      document.getElementById('cartOverlay').classList.remove('open');
+    }
+
+    function goToCheckout() {
+      if (cart.length === 0) return;
+      // Save cart to sessionStorage so checkout.html can read it
+      sessionStorage.setItem('cart', JSON.stringify(cart));
+      window.location.href = 'checkout.html';
+    }
+
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = '✅ ' + msg;
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 2000);
+    }
+
+    // Nav helpers
     function toggleMenu() {
       document.getElementById('navLinks').classList.toggle('open');
     }
-    // Shrink nav on scroll
     window.addEventListener('scroll', () => {
-      const nav = document.getElementById('navbar');
-      nav.classList.toggle('scrolled', window.scrollY > 60);
+      document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 60);
     });
   </script>
 </body>
