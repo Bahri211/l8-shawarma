@@ -451,194 +451,25 @@
       document.getElementById('grandTotal').textContent = grand + ' kr';
     }
 
-    // ---- DELIVERY MODAL STATE ----
-    const RESTAURANT_ADDRESS = 'Bjerrevej 73, 8700 Horsens, Denmark';
-    const GOOGLE_KEY = 'AIzaSyBe3s3P19AuUmDCE_5X8ftS1PyF6b_B7Q8';
-    let deliveryFeeAmount = 29;       // default, updated by modal
+    // ---- DELIVERY STATE (managed by delivery-modal.js) ----
+    let deliveryFeeAmount = 0;
     let deliveryConfirmed = false;
-    let currentModalType = null;
-    let deliveryResultData = null;    // stores last search result
 
-    // Pricing rules
-    function calcDeliveryFee(distanceKm) {
-      if (distanceKm <= 3)  return { fee: 29,  minOrder: 100, freeAt: 249 };
-      if (distanceKm <= 6)  return { fee: 39,  minOrder: 129, freeAt: 299 };
-      if (distanceKm <= 10) return { fee: 49,  minOrder: 149, freeAt: 349 };
-      if (distanceKm <= 15) return { fee: 69,  minOrder: 179, freeAt: 399 };
-      return null; // too far
-    }
 
-    function openDeliveryModal(type) {
-      document.getElementById('deliveryModal').classList.add('show');
-      document.getElementById('deliveryResult').classList.remove('show', 'no-delivery');
-      document.getElementById('modalConfirmBtns').classList.remove('show');
-      document.getElementById('modalAddressInput').value = '';
-      if (type) selectModalType(type);
-    }
 
-    function closeDeliveryModal() {
-      document.getElementById('deliveryModal').classList.remove('show');
-    }
 
-    function selectModalType(type) {
-      currentModalType = type;
-      document.getElementById('modal-btn-pickup').classList.toggle('selected', type === 'pickup');
-      document.getElementById('modal-btn-delivery').classList.toggle('selected', type === 'delivery');
-      const wrap = document.getElementById('addrSearchWrap');
-      if (type === 'delivery') {
-        wrap.classList.add('visible');
-      } else {
-        wrap.classList.remove('visible');
-        // Pickup — confirm immediately
-        confirmPickup();
-      }
-    }
 
-    function confirmPickup() {
-      deliveryType = 'pickup';
-      deliveryConfirmed = true;
-      deliveryFeeAmount = 0;
-      // Update UI
-      document.getElementById('opt-delivery').classList.remove('active');
-      document.getElementById('opt-pickup').classList.add('active');
-      document.getElementById('addressFields').style.display = 'none';
-      document.getElementById('deliveryFeeRow').style.display = 'none';
-      document.getElementById('pickup-note').style.display = '';
-      const strip = document.getElementById('deliveryInfoStrip');
-      strip.classList.add('show');
-      document.getElementById('disType').textContent = '🏪 Afhentning – Bjerrevej 73, 8700 Horsens';
-      document.getElementById('disAddressRow').style.display = 'none';
-      document.getElementById('disDistRow').style.display = 'none';
-      updateTotals();
-      closeDeliveryModal();
-    }
 
-    async function searchDeliveryAddress() {
-      const input = document.getElementById('modalAddressInput').value.trim();
-      if (!input) { alert('Indtast venligst en adresse.'); return; }
 
-      const btn = document.getElementById('addrSearchBtn');
-      btn.textContent = '⏳';
-      btn.disabled = true;
-      document.getElementById('deliveryResult').classList.remove('show', 'no-delivery');
-      document.getElementById('modalConfirmBtns').classList.remove('show');
 
-      try {
-        // 1. Geocode customer address
-        const geoUrl = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(input + ', Denmark')}&key=${GOOGLE_KEY}`;
-        const geoRes = await fetch(geoUrl);
-        const geoData = await geoRes.json();
 
-        if (!geoData.results || !geoData.results.length) {
-          showModalError('Adressen blev ikke fundet. Prøv igen med vejnavn og nummer.');
-          return;
-        }
 
-        const customerAddress = geoData.results[0].formatted_address;
-        const { lat, lng } = geoData.results[0].geometry.location;
 
-        // 2. Distance Matrix from restaurant to customer
-        const distUrl = `https://maps.googleapis.com/maps/api/distancematrix/json?origins=${encodeURIComponent(RESTAURANT_ADDRESS)}&destinations=${lat},${lng}&units=metric&key=${GOOGLE_KEY}`;
-        const distRes = await fetch(distUrl);
-        const distData = await distRes.json();
 
-        const element = distData.rows?.[0]?.elements?.[0];
-        if (!element || element.status !== 'OK') {
-          showModalError('Kunne ikke beregne afstand. Prøv igen.');
-          return;
-        }
 
-        const distanceM = element.distance.value;
-        const distanceKm = distanceM / 1000;
-        const durationText = element.duration.text;
-        const distanceText = (distanceKm).toFixed(1) + ' km';
 
-        const pricing = calcDeliveryFee(distanceKm);
-        const resultEl = document.getElementById('deliveryResult');
-        const headerEl = document.getElementById('resultHeader');
-        const bodyEl   = document.getElementById('resultBody');
 
-        if (!pricing) {
-          // Too far
-          resultEl.classList.add('show', 'no-delivery');
-          headerEl.textContent = 'Levering ikke mulig';
-          bodyEl.innerHTML = `
-            <div class="result-row"><span>Adresse</span><strong>${customerAddress}</strong></div>
-            <div class="result-row"><span>Afstand</span><strong>${distanceText}</strong></div>
-            <div class="result-row" style="color:var(--red);font-weight:600;">Vi leverer desværre ikke så langt.</div>
-          `;
-          document.getElementById('modalConfirmBtns').classList.remove('show');
-          deliveryResultData = null;
-        } else {
-          // Delivery possible
-          resultEl.classList.add('show');
-          resultEl.classList.remove('no-delivery');
-          headerEl.textContent = 'Levering mulig! ✓';
-          bodyEl.innerHTML = `
-            <div class="result-row"><span>Adresse</span><strong>${customerAddress}</strong></div>
-            <div class="result-row"><span>Afstand</span><strong>${distanceText}</strong></div>
-            <div class="result-row"><span>Leveringspris</span><strong>${pricing.fee} kr</strong></div>
-            <div class="result-row"><span>Minimumsordre</span><strong>${pricing.minOrder} kr</strong></div>
-            <div class="result-row"><span>Gratis levering ved</span><strong>${pricing.freeAt} kr</strong></div>
-            <div class="result-row"><span>Estimeret tid</span><strong>${durationText}</strong></div>
-            <div style="margin-top:12px;font-size:16px;font-weight:700;color:var(--dark);">Ønsker du at fortsætte?</div>
-          `;
-          deliveryResultData = { address: customerAddress, distanceText, pricing, durationText };
-          document.getElementById('modalConfirmBtns').classList.add('show');
-        }
 
-      } catch(err) {
-        showModalError('Noget gik galt. Tjek din internetforbindelse og prøv igen.');
-        console.error(err);
-      } finally {
-        btn.textContent = 'Søg';
-        btn.disabled = false;
-      }
-    }
-
-    function showModalError(msg) {
-      const resultEl = document.getElementById('deliveryResult');
-      resultEl.classList.add('show', 'no-delivery');
-      document.getElementById('resultHeader').textContent = 'Fejl';
-      document.getElementById('resultBody').innerHTML = `<div class="result-row" style="color:var(--red);">${msg}</div>`;
-    }
-
-    function confirmDelivery() {
-      if (!deliveryResultData) return;
-      const { address, distanceText, pricing } = deliveryResultData;
-
-      deliveryType = 'delivery';
-      deliveryConfirmed = true;
-      deliveryFeeAmount = pricing.fee;
-
-      // Fill in the address field automatically
-      document.getElementById('d-address').value = address;
-
-      // Update delivery type UI
-      document.getElementById('opt-delivery').classList.add('active');
-      document.getElementById('opt-pickup').classList.remove('active');
-      document.getElementById('addressFields').style.display = '';
-      document.getElementById('deliveryFeeRow').style.display = '';
-      document.getElementById('pickup-note').style.display = 'none';
-
-      // Show confirmed strip
-      const strip = document.getElementById('deliveryInfoStrip');
-      strip.classList.add('show');
-      document.getElementById('disType').textContent = '🏠 Udbringning';
-      document.getElementById('disAddress').textContent = address;
-      document.getElementById('disAddressRow').style.display = '';
-      document.getElementById('disDist').textContent = distanceText;
-      document.getElementById('disFee').textContent = pricing.fee + ' kr';
-      document.getElementById('disDistRow').style.display = '';
-
-      updateTotals();
-      closeDeliveryModal();
-    }
-
-    function setDelivery(type) {
-      // Legacy — now handled by modal
-      openDeliveryModal(type);
-    }
 
     // ---- STRIPE ----
     // Detect if a real Stripe key has been set
@@ -844,46 +675,6 @@
     // Init
     renderCart();
   </script>
-
-  <!-- ===== DELIVERY MODAL ===== -->
-  <div class="modal-overlay" id="deliveryModal">
-    <div class="delivery-modal">
-      <div class="modal-header">
-        <span>Vælg leveringsmetode</span>
-        <button class="modal-close" onclick="closeDeliveryModal()">×</button>
-      </div>
-      <div class="modal-body">
-        <!-- Type buttons -->
-        <div class="modal-type-btns">
-          <button class="modal-type-btn afhentning" id="modal-btn-pickup" onclick="selectModalType('pickup')">AFHENTNING</button>
-          <button class="modal-type-btn levering" id="modal-btn-delivery" onclick="selectModalType('delivery')">LEVERING</button>
-        </div>
-
-        <!-- Address search (shown when levering selected) -->
-        <div class="addr-search-wrap" id="addrSearchWrap">
-          <span class="addr-label">Indtast adresse (vejnavn og nummer)</span>
-          <div class="addr-input-row">
-            <input class="addr-input" id="modalAddressInput" type="text" placeholder="Borgmesterbakken 6, 8700 Horsens"
-              onkeydown="if(event.key==='Enter') searchDeliveryAddress()" />
-            <button class="addr-search-btn" id="addrSearchBtn" onclick="searchDeliveryAddress()">Søg</button>
-          </div>
-
-          <!-- Result -->
-          <div class="delivery-result" id="deliveryResult">
-            <div class="result-header" id="resultHeader"></div>
-            <div class="result-body" id="resultBody"></div>
-          </div>
-
-          <!-- Confirm buttons -->
-          <div class="modal-confirm-btns" id="modalConfirmBtns">
-            <button class="btn-nej" onclick="closeDeliveryModal()">Nej</button>
-            <button class="btn-ja" id="modalJaBtn" onclick="confirmDelivery()">Ja</button>
-          </div>
-        </div>
-
-      </div>
-    </div>
-  </div>
 
   <script src="delivery-modal.js"></script>
 </body>
