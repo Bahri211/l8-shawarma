@@ -35,10 +35,11 @@ module.exports = async (req, res) => {
   try {
     // Bias results around Horsens, Denmark
     const url = 'https://maps.googleapis.com/maps/api/place/autocomplete/json'
-      + '?input=' + encodeURIComponent(input)
+      + '?input=' + encodeURIComponent(input + ' Horsens')
       + '&components=country:dk'
       + '&location=55.8611,9.8467'   // Horsens center
-      + '&radius=20000'               // 20km radius bias
+      + '&radius=8000'                // tight 8km radius
+      + '&strictbounds=true'          // only show results within radius
       + '&language=da'
       + '&types=address'
       + '&key=' + KEY;
@@ -50,10 +51,13 @@ module.exports = async (req, res) => {
       return res.status(500).json({ error: 'Google API error: ' + data.status });
     }
 
-    const suggestions = (data.predictions || []).map(p => ({
-      description: p.description,
-      placeId: p.place_id
-    }));
+    const suggestions = (data.predictions || [])
+      .filter(p => p.description.toLowerCase().includes('horsens'))
+      .map(p => ({
+        // Clean up description — remove ", Danmark" suffix
+        description: p.description.replace(', Danmark', '').replace(', Denmark', ''),
+        placeId: p.place_id
+      }));
 
     res.json({ suggestions });
 
