@@ -182,10 +182,13 @@
     pendingResult = null;
     document.getElementById('dmAddrInput').value = '';
     document.getElementById('dmResult').className = 'dm-result';
+    document.getElementById('dmResultHead').textContent = '';
+    document.getElementById('dmResultBody').innerHTML = '';
     document.getElementById('dmConfirmBtns').classList.remove('show');
     document.getElementById('dmAddrSection').classList.remove('visible');
     document.getElementById('dmBtnPickup').className = 'dm-type-btn';
     document.getElementById('dmBtnDelivery').className = 'dm-type-btn';
+    closeAutocomplete();
   }
 
   // ── Public API ───────────────────────────────────────────────────────────
@@ -215,28 +218,45 @@
 
   // AFHENTNING button
   document.getElementById('dmBtnPickup').addEventListener('click', function() {
-    document.getElementById('dmAddrSection').classList.remove('visible');
-    document.getElementById('dmResult').className = 'dm-result';
-    document.getElementById('dmConfirmBtns').classList.remove('show');
     document.getElementById('dmBtnPickup').className = 'dm-type-btn active-pickup';
     document.getElementById('dmBtnDelivery').className = 'dm-type-btn';
+    document.getElementById('dmAddrSection').classList.remove('visible');
+    document.getElementById('dmResult').className = 'dm-result';
+    document.getElementById('dmResultHead').textContent = '';
+    document.getElementById('dmResultBody').innerHTML = '';
+    closeAutocomplete();
 
-    // Confirm immediately for pickup
-    const data = {
+    // Show pickup confirmation in result box
+    const resultEl = document.getElementById('dmResult');
+    resultEl.className = 'dm-result show';
+    document.getElementById('dmResultHead').textContent = '✓ Afhentning valgt';
+    document.getElementById('dmResultBody').innerHTML = `
+      <div class="dm-row"><span>Sted</span><strong>Bjerrevej 73, 8700 Horsens</strong></div>
+      <div class="dm-row"><span>Leveringspris</span><strong>Gratis</strong></div>
+      <div class="dm-row"><span>Klar om ca.</span><strong>20 minutter</strong></div>
+      <div class="dm-continue-q">Ønsker du at fortsætte?</div>
+    `;
+
+    // Set pending result for pickup
+    pendingResult = {
       type: 'pickup',
       address: 'Bjerrevej 73, 8700 Horsens',
       fee: 0,
       minOrder: 0
     };
-    localStorage.setItem('sp_delivery', JSON.stringify(data));
-    DeliveryModal.close();
-    if (onConfirmCallback) onConfirmCallback(data);
+    document.getElementById('dmConfirmBtns').classList.add('show');
   });
 
   // LEVERING button
   document.getElementById('dmBtnDelivery').addEventListener('click', function() {
     document.getElementById('dmBtnDelivery').className = 'dm-type-btn active-delivery';
     document.getElementById('dmBtnPickup').className = 'dm-type-btn';
+    // Reset any previous result when switching to delivery
+    pendingResult = null;
+    document.getElementById('dmResult').className = 'dm-result';
+    document.getElementById('dmResultHead').textContent = '';
+    document.getElementById('dmResultBody').innerHTML = '';
+    document.getElementById('dmConfirmBtns').classList.remove('show');
     document.getElementById('dmAddrSection').classList.add('visible');
     setTimeout(() => document.getElementById('dmAddrInput').focus(), 100);
   });
