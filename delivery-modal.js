@@ -251,12 +251,15 @@
   document.getElementById('dmBtnDelivery').addEventListener('click', function() {
     document.getElementById('dmBtnDelivery').className = 'dm-type-btn active-delivery';
     document.getElementById('dmBtnPickup').className = 'dm-type-btn';
-    // Reset any previous result when switching to delivery
+    // Full reset
     pendingResult = null;
     document.getElementById('dmResult').className = 'dm-result';
+    document.getElementById('dmResult').style.display = 'none';
     document.getElementById('dmResultHead').textContent = '';
     document.getElementById('dmResultBody').innerHTML = '';
     document.getElementById('dmConfirmBtns').classList.remove('show');
+    document.getElementById('dmAddrInput').value = '';
+    closeAutocomplete();
     document.getElementById('dmAddrSection').classList.add('visible');
     setTimeout(() => document.getElementById('dmAddrInput').focus(), 100);
   });
@@ -435,6 +438,7 @@
 
   function showSuccess(data) {
     const el = document.getElementById('dmResult');
+    el.style.display = '';
     el.className = 'dm-result show';
     document.getElementById('dmResultHead').textContent = '✓ Levering mulig!';
     document.getElementById('dmResultBody').innerHTML = `
@@ -450,6 +454,7 @@
 
   function showNoDelivery(data) {
     const el = document.getElementById('dmResult');
+    el.style.display = '';
     el.className = 'dm-result show bad';
     document.getElementById('dmResultHead').textContent = 'Levering ikke mulig';
     document.getElementById('dmResultBody').innerHTML = `
@@ -463,6 +468,7 @@
 
   function showError(msg) {
     const el = document.getElementById('dmResult');
+    el.style.display = '';
     el.className = 'dm-result show bad';
     document.getElementById('dmResultHead').textContent = 'Fejl';
     document.getElementById('dmResultBody').innerHTML = `
