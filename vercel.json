@@ -7,6 +7,7 @@
     { "src": "*.js",        "use": "@vercel/static" }
   ],
   "routes": [
+    { "src": "/api/autocomplete",   "dest": "/api/autocomplete.js" },
     { "src": "/api/distance",       "dest": "/api/distance.js" },
     { "src": "/api/payment/intent", "dest": "/api/payment/intent.js" },
     { "src": "/api/payment",        "dest": "/api/payment/index.js" },

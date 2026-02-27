@@ -60,6 +60,27 @@
       color:#2D1F0E;
     }
     .dm-addr-input:focus { border-color:#C8302B; background:#fff; }
+
+    /* Autocomplete dropdown */
+    .dm-autocomplete {
+      position:relative; width:100%;
+    }
+    .dm-autocomplete-list {
+      display:none; position:absolute; top:100%; left:0; right:0;
+      background:#fff; border:1.5px solid rgba(212,151,58,.3);
+      border-top:none; border-radius:0 0 10px 10px;
+      max-height:260px; overflow-y:auto;
+      z-index:9999; box-shadow:0 8px 24px rgba(0,0,0,.12);
+    }
+    .dm-autocomplete-list.show { display:block; }
+    .dm-autocomplete-item {
+      padding:13px 16px; cursor:pointer; font-size:14px;
+      color:#2D1F0E; border-bottom:1px solid rgba(212,151,58,.1);
+      transition:background .15s;
+    }
+    .dm-autocomplete-item:last-child { border-bottom:none; }
+    .dm-autocomplete-item:hover,
+    .dm-autocomplete-item.highlighted { background:#FDF6EC; color:#C8302B; font-weight:500; }
     .dm-search-btn {
       background:#C8302B; color:#fff; border:none; cursor:pointer;
       padding:13px 18px; border-radius:10px; font-size:15px; font-weight:700;
@@ -126,8 +147,12 @@
         <div class="dm-addr-section" id="dmAddrSection">
           <span class="dm-addr-label">Indtast adresse (vejnavn og nummer)</span>
           <div class="dm-addr-row">
-            <input class="dm-addr-input" id="dmAddrInput"
-              type="text" placeholder="F.eks. Borgmesterbakken 6, 8700 Horsens" />
+            <div class="dm-autocomplete" style="flex:1;">
+              <input class="dm-addr-input" id="dmAddrInput"
+                type="text" placeholder="F.eks. Borgmesterbakken 6, 8700 Horsens"
+                autocomplete="off" style="width:100%;" />
+              <div class="dm-autocomplete-list" id="dmAutoList"></div>
+            </div>
             <button class="dm-search-btn" id="dmSearchBtn">Søg</button>
           </div>
 
@@ -237,6 +262,93 @@
     DeliveryModal.close();
     if (onConfirmCallback) onConfirmCallback(pendingResult);
   });
+
+  // ── Autocomplete ─────────────────────────────────────────────────────────
+  let autocompleteTimer = null;
+  let highlightedIndex = -1;
+
+  document.getElementById('dmAddrInput').addEventListener('input', function() {
+    clearTimeout(autocompleteTimer);
+    const val = this.value.trim();
+    if (val.length < 2) {
+      closeAutocomplete();
+      return;
+    }
+    autocompleteTimer = setTimeout(() => fetchSuggestions(val), 280);
+  });
+
+  document.getElementById('dmAddrInput').addEventListener('keydown', function(e) {
+    const list = document.getElementById('dmAutoList');
+    const items = list.querySelectorAll('.dm-autocomplete-item');
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      highlightedIndex = Math.min(highlightedIndex + 1, items.length - 1);
+      updateHighlight(items);
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      highlightedIndex = Math.max(highlightedIndex - 1, -1);
+      updateHighlight(items);
+    } else if (e.key === 'Enter') {
+      if (highlightedIndex >= 0 && items[highlightedIndex]) {
+        e.preventDefault();
+        items[highlightedIndex].click();
+      }
+    } else if (e.key === 'Escape') {
+      closeAutocomplete();
+    }
+  });
+
+  // Close when clicking outside
+  document.addEventListener('click', function(e) {
+    if (!e.target.closest('.dm-autocomplete')) closeAutocomplete();
+  });
+
+  function updateHighlight(items) {
+    items.forEach((el, i) => {
+      el.classList.toggle('highlighted', i === highlightedIndex);
+    });
+  }
+
+  function closeAutocomplete() {
+    const list = document.getElementById('dmAutoList');
+    list.classList.remove('show');
+    list.innerHTML = '';
+    highlightedIndex = -1;
+  }
+
+  async function fetchSuggestions(input) {
+    try {
+      const res = await fetch('/api/autocomplete', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ input })
+      });
+      if (!res.ok) return;
+      const data = await res.json();
+      showSuggestions(data.suggestions || []);
+    } catch(e) {
+      // Silently fail — autocomplete is optional
+    }
+  }
+
+  function showSuggestions(suggestions) {
+    const list = document.getElementById('dmAutoList');
+    if (!suggestions.length) { closeAutocomplete(); return; }
+    list.innerHTML = suggestions.map((s, i) =>
+      `<div class="dm-autocomplete-item" data-place="${s.description}" data-idx="${i}">${s.description}</div>`
+    ).join('');
+    list.classList.add('show');
+    highlightedIndex = -1;
+
+    list.querySelectorAll('.dm-autocomplete-item').forEach(item => {
+      item.addEventListener('mousedown', function(e) {
+        e.preventDefault(); // prevent input blur
+        document.getElementById('dmAddrInput').value = this.dataset.place;
+        closeAutocomplete();
+        searchAddress(); // auto-search when address picked
+      });
+    });
+  }
 
   // ── Address search ───────────────────────────────────────────────────────
   async function searchAddress() {
