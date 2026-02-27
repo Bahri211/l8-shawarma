@@ -47,8 +47,7 @@ module.exports = async (req, res) => {
         + '?input=' + encodeURIComponent(searchInput)
         + '&components=country:dk'
         + '&location=55.8611,9.8467'
-        + '&radius=8000'
-        + '&strictbounds=true'
+        + '&radius=20000'
         + '&language=da'
         + '&types=address'
         + '&key=' + KEY;
@@ -77,8 +76,7 @@ module.exports = async (req, res) => {
         + '?input=' + encodeURIComponent(trimmed + ' Horsens')
         + '&components=country:dk'
         + '&location=55.8611,9.8467'
-        + '&radius=8000'
-        + '&strictbounds=true'
+        + '&radius=20000'
         + '&language=da'
         + '&types=address'
         + '&key=' + KEY;

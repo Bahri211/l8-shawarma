@@ -717,7 +717,7 @@
       clearError();
 
       const subtotal = cart.reduce((s, i) => s + i.price * i.qty, 0);
-      const fee = deliveryType === 'delivery' ? DELIVERY_FEE : 0;
+      const fee = deliveryType === 'delivery' ? deliveryFeeAmount : 0;
       const total = subtotal + fee;
 
       try {
