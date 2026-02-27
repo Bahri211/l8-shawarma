@@ -20,11 +20,12 @@
     .dm-overlay.show { display:flex; }
     .dm-box {
       background:#fff; border-radius:22px; width:100%; max-width:500px;
-      box-shadow:0 24px 64px rgba(0,0,0,.28); overflow:hidden;
+      box-shadow:0 24px 64px rgba(0,0,0,.28); overflow:visible;
       font-family:'DM Sans',sans-serif;
     }
     .dm-header {
       background:#C8302B; color:#fff;
+      border-radius:22px 22px 0 0;
       padding:18px 24px;
       display:flex; align-items:center; justify-content:space-between;
     }
@@ -69,8 +70,8 @@
       display:none; position:absolute; top:100%; left:0; right:0;
       background:#fff; border:1.5px solid rgba(212,151,58,.3);
       border-top:none; border-radius:0 0 10px 10px;
-      max-height:260px; overflow-y:auto;
-      z-index:9999; box-shadow:0 8px 24px rgba(0,0,0,.12);
+      max-height:240px; overflow-y:auto;
+      z-index:99999; box-shadow:0 8px 24px rgba(0,0,0,.18);
     }
     .dm-autocomplete-list.show { display:block; }
     .dm-autocomplete-item {
