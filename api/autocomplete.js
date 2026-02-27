@@ -1,5 +1,5 @@
 // api/autocomplete.js — Vercel Serverless Function
-// Google Places Autocomplete proxy — key stays server-side
+// Google Places Autocomplete proxy — Horsens only, with house numbers
 
 const https = require('https');
 
@@ -33,13 +33,18 @@ module.exports = async (req, res) => {
     return res.status(500).json({ error: 'API key not configured.' });
 
   try {
-    // Bias results around Horsens, Denmark
+    // Always append Horsens so results are local
+    // But keep original input so house numbers work (e.g. "Thorsgade 5")
+    const searchInput = input.toLowerCase().includes('horsens')
+      ? input
+      : input + ' Horsens';
+
     const url = 'https://maps.googleapis.com/maps/api/place/autocomplete/json'
-      + '?input=' + encodeURIComponent(input + ' Horsens')
+      + '?input=' + encodeURIComponent(searchInput)
       + '&components=country:dk'
-      + '&location=55.8611,9.8467'   // Horsens center
-      + '&radius=8000'                // tight 8km radius
-      + '&strictbounds=true'          // only show results within radius
+      + '&location=55.8611,9.8467'
+      + '&radius=8000'
+      + '&strictbounds=true'
       + '&language=da'
       + '&types=address'
       + '&key=' + KEY;
@@ -54,8 +59,10 @@ module.exports = async (req, res) => {
     const suggestions = (data.predictions || [])
       .filter(p => p.description.toLowerCase().includes('horsens'))
       .map(p => ({
-        // Clean up description — remove ", Danmark" suffix
-        description: p.description.replace(', Danmark', '').replace(', Denmark', ''),
+        // Clean up — remove ", Danmark" suffix for cleaner display
+        description: p.description
+          .replace(', Danmark', '')
+          .replace(', Denmark', ''),
         placeId: p.place_id
       }));
 
