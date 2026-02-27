@@ -288,8 +288,8 @@
         <div class="section-card">
           <h2>🚀 Leveringstype</h2>
           <div class="delivery-toggle">
-            <div class="delivery-opt" id="opt-delivery" onclick="openDeliveryModal('delivery')">🏠 Udbringning</div>
-            <div class="delivery-opt" id="opt-pickup" onclick="openDeliveryModal('pickup')">🏪 Afhentning</div>
+            <div class="delivery-opt" id="opt-delivery" onclick="DeliveryModal.open(function(d){d.savedAt=Date.now();localStorage.setItem('sp_delivery',JSON.stringify(d));applyDeliveryData(d);})">🏠 Udbringning</div>
+            <div class="delivery-opt" id="opt-pickup" onclick="DeliveryModal.open(function(d){d.savedAt=Date.now();localStorage.setItem('sp_delivery',JSON.stringify(d));applyDeliveryData(d);})">🏪 Afhentning</div>
           </div>
           <!-- Delivery confirmed info strip -->
           <div class="delivery-info-strip" id="deliveryInfoStrip">

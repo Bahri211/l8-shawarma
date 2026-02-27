@@ -203,11 +203,6 @@
       onConfirmCallback = onConfirm || null;
       resetModal();
       document.getElementById('dmOverlay').classList.add('show');
-      // Small delay so modal is visible before focusing
-      setTimeout(() => {
-        const overlay = document.getElementById('dmOverlay');
-        if (overlay) overlay.scrollTop = 0;
-      }, 50);
     },
 
     close: function() {
@@ -287,7 +282,7 @@
   // JA button
   document.getElementById('dmJa').addEventListener('click', function() {
     if (!pendingResult) return;
-    pendingResult.savedAt = Date.now(); localStorage.setItem('sp_delivery', JSON.stringify(pendingResult));
+    localStorage.setItem('sp_delivery', JSON.stringify(pendingResult));
     DeliveryModal.close();
     if (onConfirmCallback) onConfirmCallback(pendingResult);
   });
@@ -363,31 +358,25 @@
   function showSuggestions(suggestions) {
     const list = document.getElementById('dmAutoList');
     if (!suggestions.length) { closeAutocomplete(); return; }
-    list.innerHTML = suggestions.map((s, i) => {
-      // Show only the street + number part (before first comma) for clean display
-      const displayText = s.description.split(',')[0].trim();
-      return `<div class="dm-autocomplete-item" data-place="${s.description}" data-display="${displayText}" data-idx="${i}">${displayText}</div>`;
-    }).join('');
+    list.innerHTML = suggestions.map((s, i) =>
+      `<div class="dm-autocomplete-item" data-place="${s.description}" data-idx="${i}">${s.description}</div>`
+    ).join('');
     list.classList.add('show');
     highlightedIndex = -1;
 
     list.querySelectorAll('.dm-autocomplete-item').forEach(item => {
       item.addEventListener('mousedown', function(e) {
-        e.preventDefault();
-        // Show short name in input but use full address for search
-        document.getElementById('dmAddrInput').value = this.dataset.display;
-        document.getElementById('dmAddrInput').dataset.fullAddress = this.dataset.place;
+        e.preventDefault(); // prevent input blur
+        document.getElementById('dmAddrInput').value = this.dataset.place;
         closeAutocomplete();
-        searchAddress();
+        searchAddress(); // auto-search when address picked
       });
     });
   }
 
   // ── Address search ───────────────────────────────────────────────────────
   async function searchAddress() {
-    const inputEl = document.getElementById('dmAddrInput');
-    const input = inputEl.dataset.fullAddress || inputEl.value.trim();
-    inputEl.dataset.fullAddress = ''; // clear after use
+    const input = document.getElementById('dmAddrInput').value.trim();
     if (!input) {
       document.getElementById('dmAddrInput').focus();
       return;
