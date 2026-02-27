@@ -642,7 +642,7 @@
 
     // ---- STRIPE ----
     // Detect if a real Stripe key has been set
-    const stripeKey = window.STRIPE_PUBLIC_KEY || '';
+    const stripeKey = window.STRIPE_PUBLIC_KEY || 'pk_test_51T4kvT9PpJ5u93penIxhLEJ2qsU9XghVfdzgQcyrNzVtTcGSy9WguAcP1ybdlzDEViWSrk7KLOJOaV1zA1A25LiY00AmbcWElF';
     const stripeReady = stripeKey && !stripeKey.includes('YOUR_PUBLISHABLE_KEY');
 
     if (stripeReady) {
