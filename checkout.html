@@ -293,7 +293,7 @@
           </div>
           <!-- Delivery confirmed info strip -->
           <div class="delivery-info-strip" id="deliveryInfoStrip">
-            <div class="dis-row"><span id="disType" style="font-weight:700;"></span><button class="dis-change" onclick="DeliveryModal.open(function(d){ localStorage.setItem('sp_delivery', JSON.stringify(d)); applyDeliveryData(d); })">Skift →</button></div>
+            <div class="dis-row"><span id="disType" style="font-weight:700;"></span><button class="dis-change" onclick="DeliveryModal.open(function(d){ d.savedAt=Date.now(); localStorage.setItem('sp_delivery', JSON.stringify(d)); applyDeliveryData(d); })">Skift →</button></div>
             <div class="dis-row" id="disAddressRow" style="display:none;"><span id="disAddress" style="color:var(--muted);"></span></div>
             <div class="dis-row" id="disDistRow" style="display:none;">
               <span>Afstand: <strong id="disDist"></strong></span>
@@ -619,14 +619,33 @@
     (function prefillDelivery() {
       const saved = localStorage.getItem('sp_delivery');
       if (!saved) {
-        // No delivery chosen yet — open modal after short delay
-        setTimeout(() => DeliveryModal.open(applyDeliveryData), 400);
+        setTimeout(() => DeliveryModal.open(function(d) {
+          localStorage.setItem('sp_delivery', JSON.stringify(d));
+          applyDeliveryData(d);
+        }), 400);
         return;
       }
       try {
-        applyDeliveryData(JSON.parse(saved));
+        const data = JSON.parse(saved);
+        // Check if saved data is fresh (less than 2 hours old)
+        const savedTime = data.savedAt || 0;
+        const twoHours = 2 * 60 * 60 * 1000;
+        if (Date.now() - savedTime > twoHours) {
+          // Stale — clear and ask again
+          localStorage.removeItem('sp_delivery');
+          setTimeout(() => DeliveryModal.open(function(d) {
+            localStorage.setItem('sp_delivery', JSON.stringify(d));
+            applyDeliveryData(d);
+          }), 400);
+          return;
+        }
+        applyDeliveryData(data);
       } catch(e) {
-        setTimeout(() => DeliveryModal.open(applyDeliveryData), 400);
+        localStorage.removeItem('sp_delivery');
+        setTimeout(() => DeliveryModal.open(function(d) {
+          localStorage.setItem('sp_delivery', JSON.stringify(d));
+          applyDeliveryData(d);
+        }), 400);
       }
     })();
 
